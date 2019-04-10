@@ -39,5 +39,5 @@ The idea is to create a piece of software that can be used to create filogenetic
 - Extinct species / Timeline
 
 ## References
-[license](LICENSE)\
-[team](team.md)
+* [license](LICENSE)
+* [team](team.md)
