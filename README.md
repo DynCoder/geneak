@@ -1,7 +1,7 @@
 # geneak
 
 ## License
-Refer to [LICENSE](LICENSE) for the full license.
+Refer to [LICENSE](LICENSE) for the full license. ___(Especially when you're from the other group working on this project)___
 
 ## the name
 The name `geneak` comes from the basque word for genes.
