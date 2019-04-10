@@ -1,7 +1,7 @@
 # geneak
 
 ## License
-The code in this repository is protected under a GPLv3 license, refer to [LICENSE](LICENSE) for the full license.
+Refer to [LICENSE](LICENSE) for the full license.
 
 ## the name
 The name `geneak` comes from the basque word for genes.
