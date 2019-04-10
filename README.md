@@ -5,7 +5,7 @@ Refer to [LICENSE](LICENSE) for the full license.\
 ___(Especially when you're from the other group working on this project)___
 
 ## the name
-The name `geneak` comes from the basque word for genes.
+The name `geneak` comes from the basque word for genes.\
 ___I am not going to explain why basque.___
 
 ## the idea
