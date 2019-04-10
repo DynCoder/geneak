@@ -1,5 +1,9 @@
 # geneak
 
+Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.com/Joshua260403/geneak)
+---|---
+Master|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=master)](https://travis-ci.org/Joshua260403/geneak)
+
 ## License
 Refer to [LICENSE](LICENSE) for the full license.\
 ___(Especially when you're from the other group working on this project)___
@@ -40,4 +44,4 @@ The idea is to create a piece of software that can be used to create filogenetic
 
 ## References
 * [license](LICENSE)
-* [team](team.md)
+* [team](doc/team.md)
