@@ -20,7 +20,7 @@ install:
   # SFML
   - cd ..
   - wget https://www.sfml-dev.org/files/SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip
-  - unzip SFML-2.5.0-windows-gcc-7.3.0-mingw-32-bit.zip
+  - unzip SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip
   - mv SFML-2.5.0 sfml
   - cd $my_github
   - ls
