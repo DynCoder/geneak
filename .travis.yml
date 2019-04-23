@@ -17,6 +17,8 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   # XRandR, else you get 'Failed to use the XRandR extension while trying to get the desktop video modes'
   - sudo apt-get install libxrandr-dev
+  # SFML
+  - sudo apt-get install libsfml-dev
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # SLOCcount
