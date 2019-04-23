@@ -1,6 +1,6 @@
 # geneak
 
-Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.com/Joshua260403/geneak)
+Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.org/Joshua260403/geneak)
 ---|---
 Master|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=master)](https://travis-ci.org/Joshua260403/geneak)
 
