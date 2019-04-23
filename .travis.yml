@@ -11,12 +11,18 @@ before_install:
   # OCLint
   - ./scripts/install_oclint
 
-install: 
+install:
+  # Get my folder
+  - my_github=${PWD##*/}
   # C++14
   - sudo apt-get install -qq g++-6
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   # SFML
-  - sudo apt-get install libsfml-dev
+  - cd ..
+  - wget https://www.sfml-dev.org/files/SFML-2.5.0-windows-gcc-7.3.0-mingw-32-bit.zip -o sfml.zip
+  - unzip sfml.zip
+  - mv SFML-2.5.0 sfml
+  - cd my_github
   # XRandR, else you get 'Failed to use the XRandR extension while trying to get the desktop video modes'
   - sudo apt-get install libxrandr-dev
   # cppcheck
@@ -39,8 +45,6 @@ script:
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
   - ./scripts/do_oclint
-  # Get my folder
-  - my_github=${PWD##*/}
   # SLOCcount
   - rm -rf oclint-0.10.3 oclint-0.10.3-x86_64-linux-3.13.0-74-generic.tar.gz oclint.log
   - cd ..; sloccount $my_github; cd $my_github
