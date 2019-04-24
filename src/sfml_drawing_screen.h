@@ -9,7 +9,7 @@ class sfml_drawing_screen
 {
 public:
 
-    sfml_drawing_screen();
+    sfml_drawing_screen(int ca);
 
     void exec();
 
@@ -27,6 +27,8 @@ public:
 
 private:
 
+    int close_at;
+    
     sf::RenderWindow& m_window;
     
     sf::Text m_text;

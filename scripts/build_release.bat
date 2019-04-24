@@ -3,6 +3,9 @@ cd ..
 mkdir bin
 cd bin
 xcopy ..\src\resources\* . /y
-g++ -c -std=c++14 -DNDEBUG -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Werror -Wno-unused-variable -fext-numeric-literals -IC:/sfml/include -I../src ../src/*
+g++ -c -std=c++14 -DNDEBUG -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Werror -Wno-unused-variable -fext-numeric-literals -IC:/sfml/include -I../src ../src/*.h ../src/*.cpp
 g++ *.o -o geneak.exe -LC:/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 cd ..\scripts
+echo.
+echo If the build errored with undefined references or undeclared variable/functions a retry can work!
+echo.

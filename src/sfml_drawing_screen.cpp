@@ -6,8 +6,8 @@
 
 // Base class //
 
-sfml_drawing_screen::sfml_drawing_screen()
-    : m_window{ sfml_window_manager::get().get_window() },
+sfml_drawing_screen::sfml_drawing_screen(int ca)
+    : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
       m_default_font{ sfml_resources::get().get_default_font() }
 {
   m_text.setFont(m_default_font);
@@ -15,8 +15,7 @@ sfml_drawing_screen::sfml_drawing_screen()
 }
 
 void sfml_drawing_screen::exec() {
-  while(active(game_state::drawing))
-  {
+  while (active(game_state::drawing) && close_at != 0) {
     sf::Event event;
     while (m_window.pollEvent(event))
     {
@@ -24,7 +23,9 @@ void sfml_drawing_screen::exec() {
     }
     set_positions();
     draw_objects();
+    if (close_at > 0) --close_at;
   }
+  if (close_at == 0) close();
 }
 
 void sfml_drawing_screen::process_event(sf::Event event) {

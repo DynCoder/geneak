@@ -13,8 +13,8 @@ void test() {
   test_normal_char();
 }
 
-int show_sfml_drawing_screen() {
-  sfml_drawing_screen ds;
+int show_sfml_drawing_screen(int ca) {
+  sfml_drawing_screen ds(ca);
   ds.exec();
   return 0;
 }
@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
   #endif
   
   const std::vector<std::string> args(argv, argv + argc);
+  int close_at = -1;
   
   if (std::count(std::begin(args), std::end(args), "--version")) {
     // Travis: 2.1
@@ -47,10 +48,14 @@ int main(int argc, char **argv) {
     return 0;
   }
   
+  if (std::count(std::begin(args), std::end(args), "--ci")) {
+    close_at = 1000;
+  }
+  
   while (sfml_window_manager::get().get_window().isOpen()) {
     switch (sfml_window_manager::get().get_state()) {
       case game_state::drawing:
-        show_sfml_drawing_screen();
+        show_sfml_drawing_screen(close_at);
         break;
     }
   }
