@@ -1,5 +1,6 @@
 #!/bin/bash
 mkdir bin
 cd bin
+cp ../src/resources/* .
 g++ -c -std=c++14 -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Werror -Wno-unused-variable -fext-numeric-literals -I../../sfml/include -I../src ../src/*
 g++ *.o -o geneak -L../../sfml/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -lsfml-audio-d
