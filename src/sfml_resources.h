@@ -30,8 +30,6 @@ private:
   
   static sfml_resources *m_instance; //!OCLINT accepted for now
   
-  bool bar;
-  
   // Resources //
   
   sf::Font m_default_font;
