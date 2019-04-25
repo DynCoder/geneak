@@ -6,6 +6,7 @@
 #include "sfml_resources.h"
 #include <iostream>
 #include <vector>
+#include <cassert>
 #include <SFML/Graphics.hpp>
 
 void test() {

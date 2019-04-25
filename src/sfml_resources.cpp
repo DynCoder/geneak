@@ -9,6 +9,7 @@ sfml_resources::sfml_resources() {
     if (!m_default_font.loadFromFile(filename))
       throw std::runtime_error("Couldn't find resource " + filename);
   }
+  bar = true;
 }
 
 sfml_resources &sfml_resources::get() {
