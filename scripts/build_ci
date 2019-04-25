@@ -2,6 +2,6 @@
 mkdir bin
 cd bin
 cp ../src/resources/* .
-g++ -std=c++14 -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Werror -Wno-unused-variable -fext-numeric-literals -I../../sfml/include -I../src ../src/* -o geneak -L../../sfml/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -lsfml-audio-d
+g++ -std=c++14 -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Werror -Wno-unused-variable -fext-numeric-literals -I../../sfml/include -I../src ../src/*.h ../src/*.cpp -o geneak -L../../sfml/lib -lsfml-graphics-d -lsfml-window-d -lsfml-system-d -lsfml-audio-d
 # -c
 # g++ *.o 
