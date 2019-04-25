@@ -15,26 +15,21 @@ void test() {
 }
 
 int show_sfml_drawing_screen(int ca) {
-  std::clog << "Drawing screen:\ncreate\n";
   sfml_drawing_screen ds(ca);
-  std::clog << "exec\n";
   ds.exec();
   return 0;
 }
 
 int main(int argc, char **argv) {
-  std::clog << "Begin\n";
   #ifndef NDEBUG
   test();
   #else
   assert(1 == 2);
   #endif
 
-  std::clog << "Create vector args\n";
   const std::vector<std::string> args(argv, argv + argc);
   int close_at = -1;
 
-  std::clog << "Get version\n";
   if (std::count(std::begin(args), std::end(args), "--version")) {
     // Travis: 2.1
     // RuG: 2.3.2
@@ -49,7 +44,6 @@ int main(int argc, char **argv) {
     return 0;
   }
   
-  std::clog << "--test and --ci\n";
   if (std::count(std::begin(args), std::end(args), "--test")) {
     std::cout << "Hello world!" << std::endl;
     return 0;
@@ -59,7 +53,6 @@ int main(int argc, char **argv) {
     close_at = 1000;
   }
   
-  std::clog << "Start loop\n";
   while (sfml_window_manager::get().get_window().isOpen()) {
     switch (sfml_window_manager::get().get_state()) {
       case game_state::drawing:

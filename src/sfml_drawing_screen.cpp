@@ -15,16 +15,12 @@ sfml_drawing_screen::sfml_drawing_screen(int ca)
 }
 
 void sfml_drawing_screen::exec() {
-  std::clog << "Start exec loop\n";
   while (active(game_state::drawing) && close_at != 0) {
-    std::clog << "Create event\n";
     sf::Event event;
     while (m_window.pollEvent(event))
     {
-      std::clog << "process event\n";
       process_event(event);
     }
-    std::clog << "Set pos and draw\n";
     set_positions();
     draw_objects();
     if (close_at > 0) --close_at;
@@ -62,7 +58,6 @@ void sfml_drawing_screen::process_event(sf::Event event) {
     case sf::Event::MouseButtonPressed:
       break;
     default:
-      std::clog << "Process window manager\n";
       sfml_window_manager::get().process();
       break;
   }
