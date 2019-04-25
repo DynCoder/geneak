@@ -1,27 +1,72 @@
+#include "game_state.h"
+#include "sfml_window_manager.h"
+#include "sfml_drawing_screen.h"
+#include "sfml_text_input.h"
+#include "sfml_button.h"
+#include "sfml_resources.h"
+#include <iostream>
+#include <vector>
+#include <cassert>
 #include <SFML/Graphics.hpp>
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+void test() {
+  //test_sfml_window_manager();
+  test_normal_char();
+}
 
-    int i = 0;
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+int show_sfml_drawing_screen(int ca) {
+  std::clog << "Drawing screen:\ncreate\n";
+  sfml_drawing_screen ds(ca);
+  std::clog << "exec\n";
+  ds.exec();
+  return 0;
+}
 
-        window.clear();
-        window.draw(shape);
-        window.display();
-        if (i > 100) window.close();
-        i++;
-    }
+int main(int argc, char **argv) {
+  std::clog << "Begin\n";
+  #ifndef NDEBUG
+  test();
+  #else
+  assert(1 == 2);
+  #endif
 
+  std::clog << "Create vector args\n";
+  const std::vector<std::string> args(argv, argv + argc);
+  int close_at = -1;
+
+  std::clog << "Get version\n";
+  if (std::count(std::begin(args), std::end(args), "--version")) {
+    // Travis: 2.1
+    // RuG: 2.3.2
+    std::cout
+      << "SFML version: " << SFML_VERSION_MAJOR
+      << "." << SFML_VERSION_MINOR
+      #if(SFML_VERSION_MINOR > 1)
+      << "." << SFML_VERSION_PATCH
+      #endif
+      << std::endl
+    ;
     return 0;
+  }
+  
+  std::clog << "--test and --ci\n";
+  if (std::count(std::begin(args), std::end(args), "--test")) {
+    std::cout << "Hello world!" << std::endl;
+    return 0;
+  }
+  
+  if (std::count(std::begin(args), std::end(args), "--ci")) {
+    close_at = 1000;
+  }
+  
+  std::clog << "Start loop\n";
+  while (sfml_window_manager::get().get_window().isOpen()) {
+    switch (sfml_window_manager::get().get_state()) {
+      case game_state::drawing:
+        show_sfml_drawing_screen(close_at);
+        break;
+    }
+  }
+  
+  return 0;
 }
