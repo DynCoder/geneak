@@ -19,10 +19,10 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   # SFML
   - cd ..
-  - wget https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz
-  - tar -zxf SFML-2.5.1-linux-gcc-64-bit.tar.gz
+  - wget https://www.sfml-dev.org/files/SFML-2.5.0-linux-gcc-64-bit.tar.gz
+  - tar -zxf SFML-2.5.0-linux-gcc-64-bit.tar.gz
   - ls
-  - mv SFML-2.5.1 sfml
+  - mv SFML-2.5.0 sfml
   - cd $my_github
   - ls
   - ls ..
