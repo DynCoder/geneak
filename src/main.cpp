@@ -6,6 +6,7 @@ int main()
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
+    int i = 0;
     while (window.isOpen())
     {
         sf::Event event;
@@ -18,6 +19,8 @@ int main()
         window.clear();
         window.draw(shape);
         window.display();
+        if (i > 100) window.close();
+        i++;
     }
 
     return 0;
