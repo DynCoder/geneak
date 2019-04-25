@@ -44,7 +44,7 @@ script:
   # Build and run the tests
   - ./scripts/build_ci
   #- make --silent build
-  - ./bin/geneak --ci
+  - export LD_LIBRARY_PATH=../sfml/lib && ./bin/geneak --ci
   # cppcheck
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
