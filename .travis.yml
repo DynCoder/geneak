@@ -19,9 +19,10 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   # SFML
   - cd ..
-  - wget https://www.sfml-dev.org/files/SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip
-  - unzip SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip
-  - mv SFML-2.5.0 sfml
+  - wget https://www.sfml-dev.org/files/SFML-2.5.1-linux-gcc-64-bit.tar.gz
+  - tar -zxf SFML-2.5.1-linux-gcc-64-bit.tar.gz
+  - ls
+  - mv SFML-2.5.1 sfml
   - cd $my_github
   - ls
   - ls ..
@@ -43,7 +44,7 @@ script:
   # Build and run the tests
   - ./scripts/build_ci
   #- make --silent build
-  - ./bin/geneak --ci
+  - export LD_LIBRARY_PATH=../sfml/lib && ./bin/geneak --ci
   # cppcheck
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
