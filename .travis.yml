@@ -30,8 +30,16 @@ install:
   - ls
   - ls ..
   - ls ../sfml
-  # XRandR, else you get 'Failed to use the XRandR extension while trying to get the desktop video modes'
+  # SFML dependencies
   - sudo apt-get install libxrandr-dev
+  - sudo apt-get install libpthread-dev
+  - sudo apt-get install libopengl-dev
+  - sudo apt-get install libxlib-dev
+  - sudo apt-get install libudev-dev
+  - sudo apt-get install libfreetype-dev
+  - sudo apt-get install libopenal-dev
+  - sudo apt-get install libflac-dev
+  - sudo apt-get install libvorbis-dev
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # OCLint

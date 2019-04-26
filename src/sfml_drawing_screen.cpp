@@ -21,8 +21,8 @@ void sfml_drawing_screen::exec() {
     {
       process_event(event);
     }
-    //set_positions();
-    //draw_objects();
+    set_positions();
+    draw_objects();
     if (close_at > 0) --close_at;
   }
   if (close_at == 0) close();
