@@ -32,7 +32,6 @@ install:
   - ls ../sfml
   # SFML dependencies
   - sudo apt-get install libxrandr-dev
-  - sudo apt-get install libpthread-dev
   - sudo apt-get install libopengl-dev
   - sudo apt-get install libxlib-dev
   - sudo apt-get install libudev-dev
