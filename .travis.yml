@@ -32,13 +32,12 @@ install:
   - ls ../sfml
   # SFML dependencies
   - sudo apt-get install libxrandr-dev
-  - sudo apt-get install libopengl-dev
-  - sudo apt-get install libxlib-dev
-  - sudo apt-get install libudev-dev
+  #- sudo apt-get install libxlib-dev
+  #- sudo apt-get install libudev-dev
   - sudo apt-get install libfreetype-dev
   - sudo apt-get install libopenal-dev
-  - sudo apt-get install libflac-dev
-  - sudo apt-get install libvorbis-dev
+  #- sudo apt-get install libflac-dev
+  #- sudo apt-get install libvorbis-dev
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # OCLint
