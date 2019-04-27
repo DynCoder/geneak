@@ -30,11 +30,12 @@ install:
   - ls
   - ls ..
   - ls ../sfml
+  - dpkg -l | grep sfml
   # SFML dependencies
   - sudo apt-get install libxrandr-dev
   #- sudo apt-get install libxlib-dev
   #- sudo apt-get install libudev-dev
-  - sudo apt-get install libopenal-dev
+  #- sudo apt-get install libopenal-dev
   #- sudo apt-get install libflac-dev
   #- sudo apt-get install libvorbis-dev
   # cppcheck
