@@ -30,7 +30,6 @@ install:
   - ls
   - ls ..
   - ls ../sfml
-  - dpkg -l | grep sfml
   # SFML dependencies
   - sudo apt-get install libxrandr-dev
   #- sudo apt-get install libxlib-dev
