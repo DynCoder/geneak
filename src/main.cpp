@@ -35,19 +35,6 @@ int main(int argc, char **argv) {
   std::clog << system("ls") << "\n";
 #endif
   
-  std::string user = "";
-#ifdef WIN32
-  user = getenv("USERNAME");
-#endif
-#ifdef __linux__
-  user = system("whoami");
-#endif
-  if (user != "") {
-    std::clog << "Current user: " << user << "\n" << std::endl;
-  } else {
-    std::clog << "Error: user not found!"
-  }
-  
   if (std::count(std::begin(args), std::end(args), "--version")) {
     // Travis: 2.1
     // RuG: 2.3.2
