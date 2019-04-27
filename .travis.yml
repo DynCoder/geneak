@@ -30,15 +30,15 @@ install:
   - ls
   - ls ..
   - ls ../sfml
-  # SFML dependencies
-  - sudo apt-get install libxrandr-dev
-  #- sudo apt-get install libxlib-dev
-  #- sudo apt-get install libudev-dev
-  #- sudo apt-get install libopenal-dev
-  #- sudo apt-get install libflac-dev
-  #- sudo apt-get install libvorbis-dev
-  # OpenGL
-  - sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+#  # OpenGL
+#  - sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+#  # SFML dependencies
+#  - sudo apt-get install libxrandr-dev
+#  - sudo apt-get install libxlib-dev
+#  - sudo apt-get install libudev-dev
+#  - sudo apt-get install libopenal-dev
+#  - sudo apt-get install libflac-dev
+#  - sudo apt-get install libvorbis-dev
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # OCLint

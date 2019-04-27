@@ -21,6 +21,7 @@ void sfml_drawing_screen::exec() {
     {
       process_event(event);
     }
+    if (!m_window.isOpen()) return;
     set_positions();
     draw_objects();
     if (close_at > 0) --close_at;
