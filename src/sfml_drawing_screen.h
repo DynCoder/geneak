@@ -33,7 +33,7 @@ private:
     
     sf::Text m_text;
     
-    sf::Font m_default_font;
+    sf::Font& m_default_font;
 
 };
 
