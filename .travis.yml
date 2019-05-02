@@ -61,10 +61,15 @@ services:
 #  - sleep 3 # give xvfb some time to start
 
 script:
-  # Build and run the tests
-  - ./scripts/build_ci
+  # Build and run the tests, the hard way
+  #- ./scripts/build_ci
   #- make --silent build
-  - export LD_LIBRARY_PATH=../sfml/lib && ./bin/geneak --ci
+  #- export LD_LIBRARY_PATH=../sfml/lib && ./bin/geneak --ci
+  # Build and run the tests, the easy way
+  - cd src
+  - cp resources/*.* .
+  - qmake
+  - make
   # cppcheck
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
