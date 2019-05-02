@@ -22,15 +22,17 @@ install:
   - sudo apt-get install -qq g++-6
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   # SFML
-  - cd ..
-  - wget https://www.sfml-dev.org/files/SFML-2.5.0-linux-gcc-64-bit.tar.gz
-  - tar -zxf SFML-2.5.0-linux-gcc-64-bit.tar.gz
-  - ls
-  - mv SFML-2.5.0 sfml
-  - cd $my_github
-  - ls
-  - ls ..
-  - ls ../sfml
+  - sudo apt-get install libsfml-dev
+  # SFML, the hard way
+  #- cd ..
+  #- wget https://www.sfml-dev.org/files/SFML-2.5.0-linux-gcc-64-bit.tar.gz
+  #- tar -zxf SFML-2.5.0-linux-gcc-64-bit.tar.gz
+  #- ls
+  #- mv SFML-2.5.0 sfml
+  #- cd $my_github
+  #- ls
+  #- ls ..
+  #- ls ../sfml
 #  # OpenGL
 #  - sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
 #  # SFML dependencies
