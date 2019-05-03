@@ -46,7 +46,7 @@ void sfml_drawing_screen::process_event(sf::Event event) {
       break;
       
     case sf::Event::KeyPressed:
-      switch (event.key.code)
+      switch (event.key.code) //!OCLINT too few branches
       {
         case sf::Keyboard::Escape:
           close();
