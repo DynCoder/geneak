@@ -59,10 +59,8 @@ int main(int argc, char **argv) {
   }
   
   while (sfml_window_manager::get().get_window().isOpen()) {
-    switch (sfml_window_manager::get().get_state()) {
-      case game_state::drawing:
-        show_sfml_drawing_screen(close_at);
-        break;
+    if (sfml_window_manager::get().get_state() == game_state::drawing) {
+      show_sfml_drawing_screen(close_at);
     }
   }
   
