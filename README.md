@@ -5,6 +5,7 @@ Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.org/Joshua260403/gene
 Master|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=master)](https://travis-ci.org/Joshua260403/geneak)
 
 ## License
+All code in this project is licensed under the GPLv3 license.
 Refer to [LICENSE](LICENSE) for the full license.\
 ___(Especially when you're from the other group working on this project)___
 
