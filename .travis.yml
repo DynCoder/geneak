@@ -1,7 +1,6 @@
 language: cpp
-compiler: gcc
-# dist: trusty
 dist: xenial
+compiler: gcc
 
 addons: 
   apt: 
