@@ -1,4 +1,5 @@
 # geneak
+[:calendar: may-june 2019](doc/planner.md)
 
 Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.org/Joshua260403/geneak)
 ---|---
