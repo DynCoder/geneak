@@ -1,7 +1,7 @@
 In this schedule everything is assumed to take very long.
 We can have multiple people working at a time, people not working on the program will be writing the final report.
 The individual assignment mostly has to be done at home.
-I, @joshua260403, have already created a basic displaybefore the start of the project.
+I, @joshua260403, have already created a basic display before the start of the project.
 
 X | Mon | Tue | Wed | Thu | Fri | Sa | Sun
 ---|---|---|---|---|---|---|---
