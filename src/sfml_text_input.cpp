@@ -59,12 +59,13 @@ void sfml_text_input::set_string(const std::string str, sf::RenderWindow& window
 }
 
 void sfml_text_input::select(const sf::RenderWindow& window) {
-  sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+  sf::Vector2f mouse = sf::Vector2f(sf::Mouse::getPosition(window));
   double x = mouse.x;
   double y = mouse.y;
 //  assert(event.type == sf::Event::MouseButtonPressed);
   m_selected = x > m_x && x < m_x + m_width &&
                y > m_y && y < m_y + m_height;
+  m_timer = 400;
 }
 
 void sfml_text_input::input(const sf::Event& event, sf::RenderWindow& window) {
