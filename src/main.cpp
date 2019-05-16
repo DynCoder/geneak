@@ -22,11 +22,11 @@ int show_sfml_drawing_screen(int ca) {
 }
 
 int main(int argc, char **argv) {
-  #ifndef NDEBUG
+#ifndef NDEBUG
   test();
-  #else
+#else
   assert(1 == 2);
-  #endif
+#endif
 
   const std::vector<std::string> args(argv, argv + argc);
   int close_at = -1;
