@@ -70,7 +70,8 @@ void sfml_drawing_screen::process_event(sf::Event event) {
 }
 
 void sfml_drawing_screen::set_positions() {
-  m_text.setPosition(m_window.mapPixelToCoords(sf::Vector2i(100, 50 - m_text.getGlobalBounds().height)));
+  m_text.setPosition(m_window.mapPixelToCoords(
+      sf::Vector2i(100, 50 - m_text.getGlobalBounds().height)));
   m_tool_bar.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 0)));
   m_drawing_area.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 100)));
 }
