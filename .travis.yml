@@ -77,3 +77,8 @@ script:
   # SLOCcount
   - rm -rf oclint-0.10.3 oclint-0.10.3-x86_64-linux-3.13.0-74-generic.tar.gz oclint.log
   - cd ..; sloccount $my_github; cd $my_github
+  
+stages:
+  - name: package
+    if: $TRAVIS_BRANCH = release
+  - echo Release
