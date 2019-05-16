@@ -7,32 +7,42 @@
 sfml_text_input::sfml_text_input(const double x, const double y,
                          const double height, const double width)
   : m_x{x}, m_y{y}, m_height{height}, m_width{width},
-    m_selected{false}, m_str_size{0}, m_limit{20}
+    m_selected{false}, m_str_size{0}, m_limit{35},
+    m_timer{0}
 {
   m_shape.setSize(sf::Vector2f(m_width,m_height));
   m_shape.setPosition(sf::Vector2f(m_x,m_y));
   m_shape.setFillColor(sf::Color(53,234,151));
 
   m_text.setFont(sfml_resources::get().get_default_font());
+  
+  m_text.setString("|");
+  sf::FloatRect bounds = m_text.getLocalBounds();
+  m_text.setOrigin(bounds.left + bounds.width/2.0f,
+                     bounds.top  + bounds.height/2.0f);
+  m_text.setString("");
 }
 
-void sfml_text_input::set_pos(double x, double y) {
-  m_x = x - (m_width / 2);
-  m_y = y - (m_height / 2);
-  m_shape.setPosition(m_x, m_y);
+void sfml_text_input::set_pos(double x, double y, sf::RenderWindow& window) {
+  m_x = x;
+  m_y = y;
+  m_shape.setPosition(window.mapPixelToCoords(
+      sf::Vector2i(m_x, m_y)));
 
-  m_text.setPosition(m_x + (m_width / 2), m_y + (m_height / 2));
+  m_text.setPosition(window.mapPixelToCoords(
+      sf::Vector2i(m_x + (m_width / 2), m_y + (m_height / 2))));
 }
 
-void sfml_text_input::set_size(double width, double height) {
+void sfml_text_input::set_size(double width, double height, sf::RenderWindow& window) {
   m_width = width;
   m_height = height;
   m_shape.setSize(sf::Vector2f(m_width, m_height));
 
-  m_text.setPosition(m_x + (m_width / 2), m_y + (m_height / 2));
+  m_text.setPosition(window.mapPixelToCoords(
+      sf::Vector2i(m_x + (m_width / 2), m_y + (m_height / 2))));
 }
 
-void sfml_text_input::set_string(const std::string str) {
+void sfml_text_input::set_string(const std::string str, sf::RenderWindow& window) {
   m_string = str;
   m_text.setString(str);
   sf::FloatRect bounds = m_text.getLocalBounds();
@@ -43,7 +53,8 @@ void sfml_text_input::set_string(const std::string str) {
     m_text.setOrigin(bounds.left + bounds.width/2.0f,
                      m_text.getOrigin().y);
   }
-  m_text.setPosition(m_x + (m_width / 2), m_y + (m_height / 2));
+  m_text.setPosition(window.mapPixelToCoords(
+      sf::Vector2i(m_x + (m_width / 2), m_y + (m_height / 2))));
   m_str_size = m_string.size();
 }
 
@@ -56,7 +67,7 @@ void sfml_text_input::select(const sf::RenderWindow& window) {
                y > m_y && y < m_y + m_height;
 }
 
-void sfml_text_input::input(const sf::Event& event) {
+void sfml_text_input::input(const sf::Event& event, sf::RenderWindow& window) {
   assert(event.type == sf::Event::TextEntered);
   if (m_selected) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
@@ -67,7 +78,8 @@ void sfml_text_input::input(const sf::Event& event) {
                static_cast<int>(m_string.size()) < m_limit) {
       m_string += static_cast<char>(event.text.unicode);
     }
-    set_string(m_string);
+    set_string(m_string, window);
+    m_timer = 0;
   }
 }
 
@@ -75,11 +87,25 @@ sf::RectangleShape &sfml_text_input::get_shape() {
   return m_shape;
 }
 
+sf::Text &sfml_text_input::get_text() {
+  return m_text;
+}
+
 void sfml_text_input::update() {
+  if (m_timer == 200) {
+    m_text.setString(m_string + "|");
+  }
+  if (m_timer == 400) {
+    m_text.setString(m_string);
+    m_timer = 0;
+  }
+  
   if (m_selected) {
     m_shape.setFillColor(m_select_color);
+    ++m_timer;
   } else {
     m_shape.setFillColor(m_color);
+    m_timer = 0;
   }
 }
 

@@ -3,6 +3,8 @@
 
 #include "game_state.h"
 #include "sfml_resources.h"
+#include "sfml_text_input.h"
+//#include "sfml_button.h"
 #include <SFML/Graphics.hpp>
 
 class sfml_drawing_screen
@@ -31,13 +33,11 @@ private:
     int close_at;
     
     sf::RenderWindow& m_window;
-    
-    sf::Text m_text;
-    
-    sf::Font& m_default_font;
 
     sf::RectangleShape m_tool_bar;
     sf::RectangleShape m_drawing_area;
+    
+    sfml_text_input m_input;
     
     // sf::View m_drawing_view;
     

@@ -17,18 +17,18 @@ public:
   /// Is the text_input clicked?
   void select(const sf::RenderWindow& window);
 
-  void input(const sf::Event& event);
+  void input(const sf::Event& event, sf::RenderWindow& window);
 
   sf::RectangleShape &get_shape();
-  sf::Text &get_text() noexcept { return m_text; }
+  sf::Text &get_text();
 
   sf::Vector2f get_pos() noexcept { return sf::Vector2f(m_x, m_y); }
   sf::Vector2f get_size() noexcept { return sf::Vector2f(m_width, m_height); }
 
-  void set_string(const std::string str);
+  void set_string(const std::string str, sf::RenderWindow& window);
 
-  void set_pos(double x, double y);
-  void set_size(double width, double height);
+  void set_pos(double x, double y, sf::RenderWindow& window);
+  void set_size(double width, double height, sf::RenderWindow& window);
 
   bool is_selected() const noexcept { return m_selected; }
 
@@ -60,6 +60,8 @@ private:
 
   sf::Color m_color;
   sf::Color m_select_color;
+  
+  int m_timer;
 
 };
 
