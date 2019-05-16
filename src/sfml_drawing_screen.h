@@ -22,6 +22,7 @@ public:
     void close();
 
     void set_positions();
+    void set_sizes();
     
     void draw_objects();
 
@@ -35,6 +36,11 @@ private:
     
     sf::Font& m_default_font;
 
+    sf::RectangleShape m_tool_bar;
+    sf::RectangleShape m_drawing_area;
+    
+    // sf::View m_drawing_view;
+    
 };
 
 #endif // SFML_DRAWING_SCREEN_H
