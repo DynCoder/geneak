@@ -15,7 +15,7 @@ sfml_text_input::sfml_text_input(const double x, const double y,
   m_shape.setFillColor(sf::Color(53,234,151));
 
   m_text.setFont(sfml_resources::get().get_default_font());
-  
+
   m_text.setString("|");
   sf::FloatRect bounds = m_text.getLocalBounds();
   m_text.setOrigin(bounds.left + bounds.width/2.0f,
@@ -103,7 +103,7 @@ void sfml_text_input::update() {
     m_text.setString(m_string);
     m_timer = 0;
   }
-  
+
   if (m_selected) {
     m_shape.setFillColor(m_select_color);
     ++m_timer;
@@ -136,6 +136,8 @@ bool is_normal_char(uint32_t c) {
   return (c > 47 && c < 58) ||
          (c > 64 && c < 91) ||
          (c > 96 && c < 123) ||
+         (c > 39 && c < 42) ||
+         (c == ';') ||
          (c == ' ');
 }
 
@@ -151,13 +153,14 @@ void test_normal_char() { //!OCLINT tests can be complex
   assert(is_normal_char('1'));
   assert(is_normal_char('5'));
   assert(is_normal_char(' '));
+  assert(is_normal_char('('));
+  assert(is_normal_char(';'));
 
   assert(!is_normal_char('{'));
   assert(!is_normal_char('\\'));
   assert(!is_normal_char('\b'));
   assert(!is_normal_char('\n'));
   assert(!is_normal_char('`'));
-  assert(!is_normal_char(';'));
   assert(!is_normal_char('*'));
   assert(!is_normal_char('|'));
 }
