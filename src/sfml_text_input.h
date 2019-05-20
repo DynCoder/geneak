@@ -63,6 +63,8 @@ private:
   
   int m_timer;
 
+  int m_pos;
+  
 };
 
 bool is_normal_char(uint32_t c);
