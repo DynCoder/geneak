@@ -46,13 +46,16 @@ void sfml_text_input::set_string(const std::string str, sf::RenderWindow& window
   m_string = str;
   m_text.setString(str);
   sf::FloatRect bounds = m_text.getLocalBounds();
-  if (m_str_size == 0 && m_string.size() == 1) {
-    m_text.setOrigin(bounds.left + bounds.width/2.0f,
-                     bounds.top  + bounds.height/2.0f);
-  } else {
-    m_text.setOrigin(bounds.left + bounds.width/2.0f,
-                     m_text.getOrigin().y);
-  }
+//  if (m_str_size == 0 && m_string.size() == 1) {
+//    m_text.setOrigin(bounds.left + bounds.width/2.0f,
+//                     bounds.top  + bounds.height/2.0f);
+//  } else {
+//    m_text.setOrigin(bounds.left + bounds.width/2.0f,
+//                     m_text.getOrigin().y);
+//  }
+  m_text.setOrigin(bounds.left + bounds.width/2.0f, 
+                      m_text.getOrigin().y);
+//
   m_text.setPosition(window.mapPixelToCoords(
       sf::Vector2i(m_x + (m_width / 2), m_y + (m_height / 2))));
   m_str_size = m_string.size();
