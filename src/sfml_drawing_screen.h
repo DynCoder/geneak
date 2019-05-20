@@ -4,6 +4,7 @@
 #include "game_state.h"
 #include "sfml_resources.h"
 #include "sfml_text_input.h"
+#include "sfml_button.h"
 //#include "sfml_button.h"
 #include <SFML/Graphics.hpp>
 
@@ -39,6 +40,8 @@ private:
     
     sfml_text_input m_input;
     
+	sfml_button m_confirm;
+	
     // sf::View m_drawing_view;
     
 };

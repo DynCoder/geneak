@@ -81,12 +81,14 @@ void sfml_drawing_screen::set_positions() {
   m_tool_bar.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 0)));
   m_drawing_area.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 100)));
   m_input.set_pos(20, 20, m_window);
+  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 30, 20);
 }
 
 void sfml_drawing_screen::set_sizes() {
   m_tool_bar.setSize(sf::Vector2f(m_window.getSize().x, 100));
   m_drawing_area.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y - 100));
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
+  m_confirm.set_size(120, 50);
 }
 
 void sfml_drawing_screen::draw_objects() {
@@ -97,6 +99,8 @@ void sfml_drawing_screen::draw_objects() {
   m_window.draw(m_input.get_shape());
   m_window.draw(m_input.get_text());
   
+  m_window.draw(m_confirm.get_shape());
+  m_window.draw(m_confirm.get_text());
   // sf::View o_view = getView
   // setView(m_draw_view)
   // Draw tree
