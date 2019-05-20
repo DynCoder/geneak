@@ -8,7 +8,7 @@ sfml_text_input::sfml_text_input(const double x, const double y,
                          const double height, const double width)
   : m_x{x}, m_y{y}, m_height{height}, m_width{width},
     m_selected{false}, m_str_size{0}, m_limit{35},
-    m_timer{0}
+    m_timer{0}, m_pos{0}
 {
   m_shape.setSize(sf::Vector2f(m_width,m_height));
   m_shape.setPosition(sf::Vector2f(m_x,m_y));
@@ -68,7 +68,7 @@ void sfml_text_input::select(const sf::RenderWindow& window) {
 //  assert(event.type == sf::Event::MouseButtonPressed);
   m_selected = x > m_x && x < m_x + m_width &&
                y > m_y && y < m_y + m_height;
-  m_timer = 400;
+  m_timer = 300;
 }
 
 void sfml_text_input::input(const sf::Event& event, sf::RenderWindow& window) {
@@ -96,10 +96,12 @@ sf::Text &sfml_text_input::get_text() {
 }
 
 void sfml_text_input::update() {
-  if (m_timer == 200) {
+  if (m_timer == 150) {
+    std::string tmp = m_string;
+    // TODO tmp.insert(m_pos, "|")
     m_text.setString(m_string + "|");
   }
-  if (m_timer == 400) {
+  if (m_timer == 300) {
     m_text.setString(m_string);
     m_timer = 0;
   }
