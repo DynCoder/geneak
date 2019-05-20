@@ -3,7 +3,6 @@
 #include "sfml_resources.h"
 #include <iostream>
 #include <cassert>
-
 // Base class //
 
 sfml_drawing_screen::sfml_drawing_screen(int ca)
@@ -12,6 +11,7 @@ sfml_drawing_screen::sfml_drawing_screen(int ca)
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
+  m_confirm.get_shape().setFillColor(sf::Color(45, 235, 205));
 }
 
 void sfml_drawing_screen::exec() {
