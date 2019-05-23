@@ -1,6 +1,7 @@
 #include "sfml_drawing_screen.h"
 #include "sfml_window_manager.h"
 #include "sfml_resources.h"
+#include "sfml_line.h"
 #include <iostream>
 #include <cassert>
 // Base class //
@@ -34,7 +35,7 @@ void sfml_drawing_screen::exec() {
   if (close_at == 0) close();
 }
 
-void sfml_drawing_screen::process_event(sf::Event event) {
+void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be complex
   switch (event.type) {
     case sf::Event::Closed:
         close();
@@ -97,6 +98,9 @@ void sfml_drawing_screen::set_sizes() {
   m_drawing_area.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y - 100));
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
   m_confirm.set_size(120, 50, m_window);
+  
+  m_drawing_view.setCenter(0, 0);
+  m_drawing_view.setViewport(sf::FloatRect(0, 100, m_window.getSize().x, m_window.getSize().y - 100));
 }
 
 void sfml_drawing_screen::draw_objects() {
@@ -109,10 +113,14 @@ void sfml_drawing_screen::draw_objects() {
   
   m_window.draw(m_confirm.get_shape());
   m_window.draw(m_confirm.get_text());
-  // sf::View o_view = getView
-  // setView(m_draw_view)
-  // Draw tree
-  // setView(o_view)
+  
+  sf::View o_view = m_window.getView();
+  m_window.setView(m_drawing_view);
+  // Draw tree //
+  
+  ///////////////
+  m_window.setView(o_view);
+  
   m_window.display();
 }
 

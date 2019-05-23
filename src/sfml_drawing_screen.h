@@ -42,7 +42,7 @@ private:
     
 	  sfml_button m_confirm;
 	
-    // sf::View m_drawing_view;
+    sf::View m_drawing_view;
     
 };
 
