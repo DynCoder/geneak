@@ -76,15 +76,21 @@ void sfml_text_input::input(const sf::Event& event, sf::RenderWindow& window) {
   if (m_selected) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
       m_selected = false;
-    } else if (event.text.unicode == '\b' && m_string.size() > 0) {
-      m_string.resize(m_string.size() - 1);
+    } else if (event.text.unicode == '\b' && m_string.size() > 0 && m_pos > 0) {
+      //m_string.resize(m_string.size() - 1);
+      m_string.erase(m_pos - 1, 1);
+      m_pos--;
     } else if (is_normal_char(event.text.unicode) &&
                static_cast<int>(m_string.size()) < m_limit) {
-      m_string += static_cast<char>(event.text.unicode);
+      std::string s;
+      s += static_cast<char>(event.text.unicode);
+      m_string.insert(m_pos, s);
+      m_pos++;
     }
     set_string(m_string, window);
-    m_timer = 0;
+    m_timer = 150;
   }
+  assert(static_cast<unsigned int>(m_pos) <= m_string.size());
 }
 
 sf::RectangleShape &sfml_text_input::get_shape() {
@@ -96,12 +102,12 @@ sf::Text &sfml_text_input::get_text() {
 }
 
 void sfml_text_input::update() {
-  if (m_timer == 150) {
+  if (m_timer >= 150) {
     std::string tmp = m_string;
-    // TODO tmp.insert(m_pos, "|")
-    m_text.setString(m_string + "|");
+    tmp.insert(m_pos, "|");
+    m_text.setString(tmp);
   }
-  if (m_timer == 300) {
+  if (m_timer >= 300) {
     m_text.setString(m_string);
     m_timer = 0;
   }
@@ -112,6 +118,20 @@ void sfml_text_input::update() {
   } else {
     m_shape.setFillColor(m_color);
     m_timer = 0;
+  }
+}
+
+void sfml_text_input::left() {
+  if (m_selected && m_pos > 0) {
+    m_pos--;
+    m_timer = 150;
+  }
+}
+
+void sfml_text_input::right() {
+  if (m_selected && static_cast<unsigned int>(m_pos) < m_string.size()) {
+    m_pos++;
+    m_timer = 150;
   }
 }
 

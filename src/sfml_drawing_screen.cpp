@@ -58,6 +58,14 @@ void sfml_drawing_screen::process_event(sf::Event event) {
           close();
           break;
           
+        case sf::Keyboard::Left:
+          m_input.left();
+          break;
+          
+        case sf::Keyboard::Right:
+          m_input.right();
+          break;
+          
         default:
           break;
       }
@@ -81,14 +89,14 @@ void sfml_drawing_screen::set_positions() {
   m_tool_bar.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 0)));
   m_drawing_area.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 100)));
   m_input.set_pos(20, 20, m_window);
-  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 30, 20);
+  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 50, 20, m_window);
 }
 
 void sfml_drawing_screen::set_sizes() {
   m_tool_bar.setSize(sf::Vector2f(m_window.getSize().x, 100));
   m_drawing_area.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y - 100));
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
-  m_confirm.set_size(120, 50);
+  m_confirm.set_size(120, 50, m_window);
 }
 
 void sfml_drawing_screen::draw_objects() {

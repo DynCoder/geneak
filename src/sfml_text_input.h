@@ -39,6 +39,9 @@ public:
   void update();
 
   std::string get_string() const noexcept { return m_string; }
+  
+  void left();
+  void right();
 
 private:
 

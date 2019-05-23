@@ -40,7 +40,7 @@ private:
     
     sfml_text_input m_input;
     
-	sfml_button m_confirm;
+	  sfml_button m_confirm;
 	
     // sf::View m_drawing_view;
     
