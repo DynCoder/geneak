@@ -38,5 +38,4 @@ private:
 
 };
 
-
 #endif // SFML_RESOURCES_H

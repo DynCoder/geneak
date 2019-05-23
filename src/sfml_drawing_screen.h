@@ -5,7 +5,6 @@
 #include "sfml_resources.h"
 #include "sfml_text_input.h"
 #include "sfml_button.h"
-//#include "sfml_button.h"
 #include <SFML/Graphics.hpp>
 
 class sfml_drawing_screen
@@ -43,6 +42,11 @@ private:
 	  sfml_button m_confirm;
 	
     sf::View m_drawing_view;
+    
+    bool m_move_left;
+    bool m_move_right;
+    bool m_move_up;
+    bool m_move_down;
     
 };
 

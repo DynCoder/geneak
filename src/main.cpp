@@ -4,6 +4,7 @@
 #include "sfml_text_input.h"
 #include "sfml_button.h"
 #include "sfml_resources.h"
+#include "sfml_line.h"
 #include <iostream>
 #include <vector>
 #include <cassert>
@@ -30,10 +31,6 @@ int main(int argc, char **argv) {
 
   const std::vector<std::string> args(argv, argv + argc);
   int close_at = -1;
-  
-#ifdef CI
-  std::clog << system("ls") << "\n";
-#endif
   
   if (std::count(std::begin(args), std::end(args), "--version")) {
     // Travis: 2.1

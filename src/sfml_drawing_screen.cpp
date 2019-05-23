@@ -4,7 +4,6 @@
 #include "sfml_line.h"
 #include <iostream>
 #include <cassert>
-// Base class //
 
 sfml_drawing_screen::sfml_drawing_screen(int ca)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
@@ -13,9 +12,19 @@ sfml_drawing_screen::sfml_drawing_screen(int ca)
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
   m_confirm.get_shape().setFillColor(sf::Color(45, 235, 205));
+  
+  m_drawing_view = sf::View(sf::Vector2f(m_window.getSize().x / 2, 
+                                         (m_window.getSize().y / 2) + 50),
+                            sf::Vector2f(m_window.getSize().x, 
+                                         m_window.getSize().y - 100));                                       
+  
+  m_move_left = false;
+  m_move_right = false;
+  m_move_up = false;
+  m_move_down = false;
 }
 
-void sfml_drawing_screen::exec() {
+void sfml_drawing_screen::exec() { //!OCLINT can be complex
   set_sizes();
   while (active(game_state::drawing) && close_at != 0) {
     sf::Event event;
@@ -24,6 +33,11 @@ void sfml_drawing_screen::exec() {
       process_event(event);
     }
     if (!m_window.isOpen()) return;
+    
+    if (m_move_left) m_drawing_view.move(sf::Vector2f(-0.5f, 0.0f));
+    if (m_move_right) m_drawing_view.move(sf::Vector2f(0.5f, 0.0f));
+    if (m_move_up) m_drawing_view.move(sf::Vector2f(0.0f, -0.5f));
+    if (m_move_down) m_drawing_view.move(sf::Vector2f(0.0f, 0.5f));
     
     m_input.update();
     
@@ -53,7 +67,7 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       break;
       
     case sf::Event::KeyPressed:
-      switch (event.key.code) //!OCLINT too few branches
+      switch (event.key.code)
       {
         case sf::Keyboard::Escape:
           close();
@@ -61,15 +75,49 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
           
         case sf::Keyboard::Left:
           m_input.left();
+          if (!m_input.is_selected()) m_move_left = true;
           break;
           
         case sf::Keyboard::Right:
           m_input.right();
+          if (!m_input.is_selected()) m_move_right = true;
+          break;
+          
+        case sf::Keyboard::Up:
+          if (!m_input.is_selected()) m_move_up = true;
+          break;
+          
+        case sf::Keyboard::Down:
+          if (!m_input.is_selected()) m_move_down = true;
           break;
           
         default:
           break;
       }
+      break;
+      
+    case sf::Event::KeyReleased:
+      switch (event.key.code)
+        {
+          case sf::Keyboard::Left:
+            m_move_left = false;
+            break;
+            
+          case sf::Keyboard::Right:
+            m_move_right = false;
+            break;
+            
+          case sf::Keyboard::Up:
+            m_move_up = false;
+            break;
+            
+          case sf::Keyboard::Down:
+            m_move_down = false;
+            break;
+            
+          default:
+            break;
+        }
       break;
     
     case sf::Event::MouseButtonPressed:
@@ -99,14 +147,17 @@ void sfml_drawing_screen::set_sizes() {
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
   m_confirm.set_size(120, 50, m_window);
   
+  float tb_per = 100.0/m_window.getSize().y;
+  m_drawing_view.setViewport(sf::FloatRect(0, tb_per, 1, 1 - tb_per));
   m_drawing_view.setCenter(0, 0);
-  m_drawing_view.setViewport(sf::FloatRect(0, 100, m_window.getSize().x, m_window.getSize().y - 100));
 }
 
 void sfml_drawing_screen::draw_objects() {
+  // Clear window
   m_window.clear();
+  
+  // Draw tool bar
   m_window.draw(m_tool_bar);
-  m_window.draw(m_drawing_area);
   
   m_window.draw(m_input.get_shape());
   m_window.draw(m_input.get_text());
@@ -114,13 +165,18 @@ void sfml_drawing_screen::draw_objects() {
   m_window.draw(m_confirm.get_shape());
   m_window.draw(m_confirm.get_text());
   
+  // Draw tree viewer
+  m_window.draw(m_drawing_area);
+  
   sf::View o_view = m_window.getView();
   m_window.setView(m_drawing_view);
   // Draw tree //
-  
+  sfml_line line(0, 0, 500, 300);
+  m_window.draw(line.get_shape());
   ///////////////
   m_window.setView(o_view);
   
+  // Display all to window
   m_window.display();
 }
 
@@ -131,5 +187,3 @@ void sfml_drawing_screen::close(game_state s) {
 void sfml_drawing_screen::close() {
   m_window.close();
 }
-
-////////////////

@@ -15,6 +15,10 @@ class sfml_line
     
     void set_to(double x, double y);
     
+    void set_width(double width) { m_width = width; }
+    
+    void set_color(sf::Color color) { m_color = color; }
+    
   private:
   
     double m_x;
@@ -22,6 +26,8 @@ class sfml_line
     double m_to_x;
     double m_to_y;
     double m_width;
+    sf::Color m_color;
+    
 };
 
 #endif // SFML_LINE_H

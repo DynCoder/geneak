@@ -68,7 +68,8 @@ script:
   - cd src
   - cp resources/*.* .
   - qmake
-  - make
+  - make --silent debug
+  - ./geneak --ci
   # cppcheck
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
