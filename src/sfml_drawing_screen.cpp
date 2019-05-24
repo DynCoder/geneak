@@ -63,6 +63,7 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
                      static_cast<float>(m_window.getSize().y));
         m_window.setView(view);
         set_sizes();
+        update_tree(m_input.get_string());
       }
       break;
       
@@ -159,6 +160,7 @@ void sfml_drawing_screen::draw_objects() {
   // Clear window
   m_window.clear();
   
+  
   // Draw tool bar
   m_window.draw(m_tool_bar);
   
@@ -168,16 +170,27 @@ void sfml_drawing_screen::draw_objects() {
   m_window.draw(m_confirm.get_shape());
   m_window.draw(m_confirm.get_text());
   
+  
   // Draw tree viewer
   m_window.draw(m_drawing_area);
   
   sf::View o_view = m_window.getView();
   m_window.setView(m_drawing_view);
+  
   // Draw tree //
-  sfml_line line(0, 0, 500, 300);
-  m_window.draw(line.get_shape());
+  
+  for (auto &obj : m_tree_lines) {
+    m_window.draw(obj);
+  }
+  
+  for (auto &obj : m_tree_text) {
+    m_window.draw(obj);
+  }
+  
   ///////////////
+  
   m_window.setView(o_view);
+  
   
   // Display all to window
   m_window.display();
@@ -192,6 +205,8 @@ void sfml_drawing_screen::close() {
 }
 
 void sfml_drawing_screen::update_tree(std::string in) {
+  m_tree_lines.clear();
+  m_tree_text.clear();
   // for char in string look if letter
   // if letter push whole word into sf text
   // push back sf text to m_text

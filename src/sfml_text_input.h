@@ -1,6 +1,7 @@
 #ifndef SFML_TEXT_INPUT_H
 #define SFML_TEXT_INPUT_H
 
+#include "sfml_line.h"
 #include <SFML/Graphics.hpp>
 
 class sfml_text_input
