@@ -179,12 +179,12 @@ void sfml_drawing_screen::draw_objects() {
   
   // Draw tree //
   
-  for (auto &obj : m_tree_lines) {
-    m_window.draw(obj);
+  for (auto &line : m_tree_lines) {
+    m_window.draw(line.get_shape());
   }
   
-  for (auto &obj : m_tree_text) {
-    m_window.draw(obj);
+  for (auto &txt : m_tree_text) {
+    m_window.draw(txt);
   }
   
   ///////////////
@@ -210,6 +210,6 @@ void sfml_drawing_screen::update_tree(std::string in) {
   // for char in string look if letter
   // if letter push whole word into sf text
   // push back sf text to m_text
-  
+  std::clog << in << std::endl;
   // Calculate branches
 }
