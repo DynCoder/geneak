@@ -7,7 +7,7 @@
 
 sfml_drawing_screen::sfml_drawing_screen(int ca)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
-      m_input(20, 20, 50, 50)
+      m_input(20, 20, 50, 50), tree_lines{}, tree_text{}
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
@@ -122,6 +122,9 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
     
     case sf::Event::MouseButtonPressed:
       m_input.select(m_window);
+      if (m_confirm.is_clicked(event, m_window)) {
+        m_newick = m_input.get_string();
+      }
       break;
     
     case sf::Event::TextEntered:
@@ -186,4 +189,12 @@ void sfml_drawing_screen::close(game_state s) {
 
 void sfml_drawing_screen::close() {
   m_window.close();
+}
+
+void sfml_drawing_screen::update_tree(std::string in) {
+  // for char in string look if letter
+  // if letter push whole word into sf text
+  // push back sf text to m_text
+  
+  // Calculate branches
 }

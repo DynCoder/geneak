@@ -48,6 +48,12 @@ private:
     bool m_move_up;
     bool m_move_down;
     
+    std::string m_newick;
+    
+    std::vector<sfml_line> m_tree_lines;
+    std::vector<sf::Text> m_tree_text;
+    
+    void update_tree(std::string in);
 };
 
 #endif // SFML_DRAWING_SCREEN_H

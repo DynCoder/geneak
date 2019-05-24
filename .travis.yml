@@ -68,7 +68,7 @@ script:
   - cd src
   - cp resources/*.* .
   - qmake
-  - make --silent debug
+  - make
   - ./geneak --ci
   # cppcheck
   - cppcheck --quiet --error-exitcode=1 . 
