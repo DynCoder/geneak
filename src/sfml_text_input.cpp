@@ -117,7 +117,7 @@ void sfml_text_input::update() {
     ++m_timer;
   } else {
     m_shape.setFillColor(m_color);
-    m_timer = 0;
+    if (m_timer != 0) m_timer = 300;
   }
 }
 
@@ -160,7 +160,8 @@ bool is_normal_char(uint32_t c) {
          (c > 96 && c < 123) ||
          (c > 39 && c < 42) ||
          (c == ';') ||
-         (c == ' ');
+         (c == ' ') ||
+         (c == ',');
 }
 
 void test_normal_char() { //!OCLINT tests can be complex

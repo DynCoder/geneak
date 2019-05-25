@@ -4,10 +4,11 @@
 #include "sfml_line.h"
 #include <iostream>
 #include <cassert>
+#include <functional>
 
 sfml_drawing_screen::sfml_drawing_screen(int ca)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
-      m_input(20, 20, 50, 50), tree_lines{}, tree_text{}
+      m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
@@ -124,7 +125,8 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
     case sf::Event::MouseButtonPressed:
       m_input.select(m_window);
       if (m_confirm.is_clicked(event, m_window)) {
-        m_newick = m_input.get_string();
+        std::clog << "Clicked!" << std::endl;
+        update_tree(m_input.get_string());
       }
       break;
     
@@ -204,12 +206,76 @@ void sfml_drawing_screen::close() {
   m_window.close();
 }
 
-void sfml_drawing_screen::update_tree(std::string in) {
+void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too complicated
   m_tree_lines.clear();
   m_tree_text.clear();
-  // for char in string look if letter
-  // if letter push whole word into sf text
-  // push back sf text to m_text
+  if (in.size() == 0) return;
+  
+  {
+    int parentheses = 0;
+    int y = 0;
+    std::vector<int> intercoords;
+    std::string chars = "";
+    char prevchar;
+    for (char& c : in) {
+      if ((c >= 'A' && c <= 'Z') ||
+          (c >= 'a' && c <= 'z') ||
+          (c == ' ')) {
+        chars += c;
+        if (chars.at(0) == ' ') {
+          chars = "";
+        }
+      } else {
+        if (chars != "") {
+          m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+          sf::Text txt;
+          txt.setFillColor(sf::Color(25, 25, 25));
+          txt.setFont(sfml_resources::get().get_default_font());
+          txt.setString(chars);
+          sf::FloatRect bounds = txt.getLocalBounds();
+          txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+          txt.setPosition((parentheses * 40) + 50, y);
+          m_tree_text.push_back(txt);
+          y += 40;
+          chars = "";
+        }
+        if (c == '(') {
+          parentheses++;
+          intercoords.push_back(y);
+          if (prevchar == '(') {
+            m_tree_lines.back().set_from((parentheses - 1) * 40, y + 20);
+          }
+        }
+        if (c == ')') {
+          int y_mid = (intercoords.back() + y - 40) / 2;
+          int tmp_y = 40;
+          if (prevchar == ')') {
+            m_tree_lines.back().set_to((parentheses + 1) * 40, y - 60);
+          }
+          m_tree_lines.push_back(sfml_line((parentheses -1) * 40, y_mid,
+                                            parentheses * 40, y_mid));
+          m_tree_lines.push_back(sfml_line(parentheses * 40, intercoords.back(),
+                                           parentheses * 40, y - 40));
+          intercoords.pop_back();
+          parentheses--;
+        }
+      }
+      prevchar = c;
+    }
+    if (chars != "") {
+      m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+      sf::Text txt;
+      txt.setFillColor(sf::Color(25, 25, 25));
+      txt.setFont(sfml_resources::get().get_default_font());
+      txt.setString(chars);
+      sf::FloatRect bounds = txt.getLocalBounds();
+      txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+      txt.setPosition((parentheses * 40) + 50, y);
+      m_tree_text.push_back(txt);
+      y += 40;
+      chars = "";
+    }
+  }
+  
   std::clog << in << std::endl;
-  // Calculate branches
 }
