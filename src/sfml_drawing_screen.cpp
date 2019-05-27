@@ -218,79 +218,66 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
 
   {
     int parentheses = 0;
-    int max_parentheses = 0;
     int y = 0;
-    int offset = 0;
-    int dy = 0;
     std::string chars = "";
-    bool count = false;
+    std::vector<int> strings;
+    std::vector<int> coords;
     for (char& c : in) {
-      if (c == '(') {
-        max_parentheses += 1;
-      }
-      offset = max_parentheses;
-    }
-    for (int i = 0; i < max_parentheses; i++) {
-      for (char& c : in) {
-        if ((c >= 'A' && c <= 'Z') ||
-            (c >= 'a' && c <= 'z') ||
-            (c == ' ')) {
-          chars += c;
-          if (chars.at(0) == ' ') {
-            chars = "";
+      if ((c >= 'A' && c <= 'Z') ||
+          (c >= 'a' && c <= 'z') ||
+          (c == ' ')) {
+        chars += c;
+        if (chars.at(0) == ' ') {
+          chars = "";
+        }
+      } else {
+        if (chars != "") {
+          m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+          sf::Text txt;
+          txt.setFillColor(sf::Color(25, 25, 25));
+          txt.setFont(sfml_resources::get().get_default_font());
+          txt.setString(chars);
+          sf::FloatRect bounds = txt.getLocalBounds();
+          txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+          txt.setPosition((parentheses * 40) + 50, y);
+          m_tree_text.push_back(txt);
+          y += 40;
+          chars = "";
+          strings.at(parentheses)++;
+        }
+        if (c == '(') {
+          parentheses++;
+          while (static_cast<unsigned>(parentheses + 1) > strings.size()) {
+            strings.push_back(0);
           }
-        } else {
-          if (chars != "") {
-            if (count) {
-              dy += 40;
-            }
-            m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
-            sf::Text txt;
-            txt.setFillColor(sf::Color(25, 25, 25));
-            txt.setFont(sfml_resources::get().get_default_font());
-            txt.setString(chars);
-            sf::FloatRect bounds = txt.getLocalBounds();
-            txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
-            txt.setPosition((parentheses * 40) + 50, y);
-            m_tree_text.push_back(txt);
-            y += 40;
-            chars = "";
+          while (static_cast<unsigned>(parentheses + 1) > coords.size()) {
+            coords.push_back(-1);
           }
-          if (c == '(') {
-            parentheses++;
-            if (offset > 0) offset -= 1;
-            count = parentheses == max_parentheses - offset;
-          }
-          if (c == ')') {
-            parentheses--;
-            if (count) {
-              count = false;
-              dy -= 40;
-              int mid = y - 40 - (dy / 2);
-              m_tree_lines.push_back(sfml_line((parentheses + 1) * 40, y - 40 - dy,
-                                               (parentheses + 1) * 40, y - 40));
-              m_tree_lines.push_back(sfml_line((parentheses + 1) * 40, mid,
-                                                parentheses * 40, mid));
-              offset += 1;
-              dy = 0;
-            }
-          }
+          coords.at(parentheses) = y;
+        }
+        if (c == ')') {
+          m_tree_lines.push_back(sfml_line(parentheses * 40, coords.at(parentheses),
+                                           parentheses * 40, coords.at(parentheses) +
+                                                            ((strings.at(parentheses) - 1) * 40)));
+          int mid = coords.at(parentheses) + (((strings.at(parentheses) - 1) * 40) / 2);
+          m_tree_lines.push_back(sfml_line((parentheses - 1) * 40, mid,
+                                           parentheses * 40, mid));
+          parentheses--;
         }
       }
-      if (chars != "") {
-        m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
-        sf::Text txt;
-        txt.setFillColor(sf::Color(25, 25, 25));
-        txt.setFont(sfml_resources::get().get_default_font());
-        txt.setString(chars);
-        sf::FloatRect bounds = txt.getLocalBounds();
-        txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
-        txt.setPosition((parentheses * 40) + 50, y);
-        m_tree_text.push_back(txt);
-        y += 40;
-        chars = "";
-      }
-      offset += 1;
+    }
+    if (chars != "") {
+      m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+      sf::Text txt;
+      txt.setFillColor(sf::Color(25, 25, 25));
+      txt.setFont(sfml_resources::get().get_default_font());
+      txt.setString(chars);
+      sf::FloatRect bounds = txt.getLocalBounds();
+      txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+      txt.setPosition((parentheses * 40) + 50, y);
+      m_tree_text.push_back(txt);
+      y += 40;
+      chars = "";
     }
   }
 }
