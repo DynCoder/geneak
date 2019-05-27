@@ -14,7 +14,7 @@ sfml_button::sfml_button(const double x, const double y,
 
   m_text.setFont(sfml_resources::get().get_default_font());
   
-  m_text.setString("Draw Tree");
+  m_text.setString("Draw");
   sf::FloatRect bounds = m_text.getLocalBounds();
   m_text.setOrigin(bounds.left + bounds.width/2.0f,
                    bounds.top  + bounds.height/2.0f);

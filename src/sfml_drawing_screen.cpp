@@ -157,7 +157,7 @@ void sfml_drawing_screen::set_sizes() {
   m_tool_bar.setSize(sf::Vector2f(m_window.getSize().x, 100));
   m_drawing_area.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y - 100));
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
-  m_confirm.set_size(120, 50, m_window);
+  m_confirm.set_size(100, 50, m_window);
 
   float tb_per = 100.0/m_window.getSize().y;
   m_drawing_view.setViewport(sf::FloatRect(0, tb_per, 1, 1 - tb_per));
