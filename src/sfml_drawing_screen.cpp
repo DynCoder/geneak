@@ -218,86 +218,80 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
 
   {
     int parentheses = 0;
+    int max_parentheses = 0;
     int y = 0;
-    char prev_char = ' ';
+    int offset = 0;
+    int dy = 0;
     std::string chars = "";
-    std::vector<std::vector<std::vector<int>>> coords;
+    bool count = false;
     for (char& c : in) {
-      if ((c >= 'A' && c <= 'Z') ||
-          (c >= 'a' && c <= 'z') ||
-          (c == ' ')) {
-        chars += c;
-        if (chars.at(0) == ' ') {
-          chars = "";
-        }
-      } else {
-        if (chars != "") {
-          m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
-          sf::Text txt;
-          txt.setFillColor(sf::Color(25, 25, 25));
-          txt.setFont(sfml_resources::get().get_default_font());
-          txt.setString(chars);
-          sf::FloatRect bounds = txt.getLocalBounds();
-          txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
-          txt.setPosition((parentheses * 40) + 50, y);
-          coords.at(parentheses).back().push_back(y);
-          m_tree_text.push_back(txt);
-          y += 40;
-          chars = "";
-        }
-        if (c == '(') {
-          parentheses++;
-          while (coords.size() <= static_cast<unsigned>(parentheses + 1)) {
-            coords.push_back({});
+      if (c == '(') {
+        max_parentheses += 1;
+      }
+      offset = max_parentheses;
+    }
+    for (int i = 0; i < max_parentheses; i++) {
+      for (char& c : in) {
+        if ((c >= 'A' && c <= 'Z') ||
+            (c >= 'a' && c <= 'z') ||
+            (c == ' ')) {
+          chars += c;
+          if (chars.at(0) == ' ') {
+            chars = "";
           }
-          if (prev_char == '(') {
-            coords.at(parentheses - 1).back().pop_back();
+        } else {
+          if (chars != "") {
+            if (count) {
+              dy += 40;
+            }
+            m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+            sf::Text txt;
+            txt.setFillColor(sf::Color(25, 25, 25));
+            txt.setFont(sfml_resources::get().get_default_font());
+            txt.setString(chars);
+            sf::FloatRect bounds = txt.getLocalBounds();
+            txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+            txt.setPosition((parentheses * 40) + 50, y);
+            m_tree_text.push_back(txt);
+            y += 40;
+            chars = "";
           }
-          coords.at(parentheses).push_back({{y}});
-        }
-        if (c == ')') {
-          parentheses--;
+          if (c == '(') {
+            parentheses++;
+            if (offset > 0) offset -= 1;
+            count = parentheses == max_parentheses - offset;
+          }
+          if (c == ')') {
+            parentheses--;
+            if (count) {
+              count = false;
+              dy -= 40;
+              int mid = y - 40 - (dy / 2);
+              m_tree_lines.push_back(sfml_line((parentheses + 1) * 40, y - 40 - dy,
+                                               (parentheses + 1) * 40, y - 40));
+              m_tree_lines.push_back(sfml_line((parentheses + 1) * 40, mid,
+                                                parentheses * 40, mid));
+              offset += 1;
+              dy = 0;
+            }
+          }
         }
       }
-      prev_char = c;
-    }
-    if (chars != "") {
-      m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
-      sf::Text txt;
-      txt.setFillColor(sf::Color(25, 25, 25));
-      txt.setFont(sfml_resources::get().get_default_font());
-      txt.setString(chars);
-      sf::FloatRect bounds = txt.getLocalBounds();
-      txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
-      txt.setPosition((parentheses * 40) + 50, y);
-      coords.at(parentheses).back().push_back(y);
-      m_tree_text.push_back(txt);
-      y += 40;
-      chars = "";
-    }
-    int x = (coords.size() - 1) * 40;
-    int i = 0;
-    std::reverse(coords.begin(), coords.end());
-    for (auto& v : coords) {
-      for (auto& c : v) {
-        std::clog << c.front() << " " << c.back() << std::endl;
-        m_tree_lines.push_back(sfml_line(x, c.front(), x, c.back()));
-        int y_mid = (c.front() + c.back()) / 2;
-        {
-          m_tree_lines.push_back(sfml_line(x - 40, y_mid, x, y_mid));
-          if (y_mid < c.front()) {
-            coords.at(i + 1).front().front() = y_mid;
-          }
-          if (y_mid > c.back()) {
-            coords.at(i + 1).back().back() = y_mid;
-          }
-        }
-        m_tree_lines.push_back(sfml_line(x, c.front(), x, c.back()));
+      if (chars != "") {
+        m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
+        sf::Text txt;
+        txt.setFillColor(sf::Color(25, 25, 25));
+        txt.setFont(sfml_resources::get().get_default_font());
+        txt.setString(chars);
+        sf::FloatRect bounds = txt.getLocalBounds();
+        txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
+        txt.setPosition((parentheses * 40) + 50, y);
+        m_tree_text.push_back(txt);
+        y += 40;
+        chars = "";
       }
-      i++;
-      x -= 40;
+      offset += 1;
     }
   }
-
-  std::clog << in << std::endl;
 }
+
