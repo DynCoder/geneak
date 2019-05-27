@@ -7,7 +7,7 @@
 sfml_text_input::sfml_text_input(const double x, const double y,
                          const double height, const double width)
   : m_x{x}, m_y{y}, m_height{height}, m_width{width},
-    m_selected{false}, m_str_size{0}, m_limit{35},
+    m_selected{false}, m_str_size{0}, m_limit{88},
     m_timer{0}, m_pos{0}
 {
   m_shape.setSize(sf::Vector2f(m_width,m_height));
