@@ -1,6 +1,7 @@
 #ifndef SFML_TEXT_INPUT_H
 #define SFML_TEXT_INPUT_H
 
+#include "sfml_line.h"
 #include <SFML/Graphics.hpp>
 
 class sfml_text_input
@@ -17,18 +18,18 @@ public:
   /// Is the text_input clicked?
   void select(const sf::RenderWindow& window);
 
-  void input(const sf::Event& event);
+  void input(const sf::Event& event, sf::RenderWindow& window);
 
   sf::RectangleShape &get_shape();
-  sf::Text &get_text() noexcept { return m_text; }
+  sf::Text &get_text();
 
   sf::Vector2f get_pos() noexcept { return sf::Vector2f(m_x, m_y); }
   sf::Vector2f get_size() noexcept { return sf::Vector2f(m_width, m_height); }
 
-  void set_string(const std::string str);
+  void set_string(const std::string str, sf::RenderWindow& window);
 
-  void set_pos(double x, double y);
-  void set_size(double width, double height);
+  void set_pos(double x, double y, sf::RenderWindow& window);
+  void set_size(double width, double height, sf::RenderWindow& window);
 
   bool is_selected() const noexcept { return m_selected; }
 
@@ -39,7 +40,18 @@ public:
   void update();
 
   std::string get_string() const noexcept { return m_string; }
+  
+  void left();
+  void right();
+  
+  void set_text_color(sf::Color c) { m_text_color = c; }
 
+  /* TODO view
+  sf::View &get_view() { return m_view; }
+  
+  void update_view();
+  */
+  
 private:
 
   sf::RectangleShape m_shape;
@@ -60,7 +72,14 @@ private:
 
   sf::Color m_color;
   sf::Color m_select_color;
+  sf::Color m_text_color;
+  
+  int m_timer;
 
+  int m_pos;
+  
+  //sf::View m_view; TODO view
+  
 };
 
 bool is_normal_char(uint32_t c);

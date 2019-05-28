@@ -1,10 +1,12 @@
+#include "sfml_resources.h"
 #include "game_state.h"
 #include "sfml_window_manager.h"
 #include "sfml_drawing_screen.h"
 #include "sfml_text_input.h"
 #include "sfml_button.h"
-#include "sfml_resources.h"
+#include "sfml_line.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <cassert>
 #include <SFML/Graphics.hpp>
@@ -15,25 +17,51 @@ void test() {
   test_normal_char();
 }
 
-int show_sfml_drawing_screen(int ca) {
-  sfml_drawing_screen ds(ca);
+int show_sfml_drawing_screen(int ca, std::string tree) {
+  sfml_drawing_screen ds(ca, tree);
   ds.exec();
   return 0;
 }
 
-int main(int argc, char **argv) {
-  #ifndef NDEBUG
+int main(int argc, char **argv) { //!OCLINT
+#ifndef NDEBUG
   test();
-  #else
+#else
   assert(1 == 2);
-  #endif
+#endif
 
   const std::vector<std::string> args(argv, argv + argc);
   int close_at = -1;
   
-#ifdef CI
-  std::clog << system("ls") << "\n";
-#endif
+  std::string tree;
+  std::string path = "";
+  for (auto &arg : args) {
+    if (arg.size() > 4) { //!OCLINT for exception safety non-collapsible
+      if (arg.substr(arg.size() - 4) == ".gnk") {
+        
+        path = args.at(0);
+        if ((!std::count(path.begin(), path.end(), '/')) &&
+            (!std::count(path.begin(), path.end(), '\\'))) {
+          return 404;
+        }
+        while (path.back() != '/' && path.back() != '\\') {
+          path.pop_back();
+        }
+        
+        std::ifstream sfile;
+        sfile.open(arg);
+        if (sfile.is_open()) {
+          std::getline(sfile, tree);
+          sfile.close();
+        } else {
+          tree = "";
+          std::clog << "Couldn't open .gnk file" << std::endl;
+        }
+        
+      }
+    }
+  }
+  sfml_resources::get().load(path);
   
   if (std::count(std::begin(args), std::end(args), "--version")) {
     // Travis: 2.1
@@ -49,18 +77,13 @@ int main(int argc, char **argv) {
     return 0;
   }
   
-  if (std::count(std::begin(args), std::end(args), "--test")) {
-    std::cout << "Hello world!" << std::endl;
-    return 0;
-  }
-  
   if (std::count(std::begin(args), std::end(args), "--ci")) {
     close_at = 1000;
   }
   
   while (sfml_window_manager::get().get_window().isOpen()) {
     if (sfml_window_manager::get().get_state() == game_state::drawing) {
-      show_sfml_drawing_screen(close_at);
+      show_sfml_drawing_screen(close_at, tree);
     }
   }
   
