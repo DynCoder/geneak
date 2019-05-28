@@ -239,7 +239,9 @@ if (in.back() != ')') error = true;
   if (par != 0) error = true;
   
   if (error) {
+#ifndef CI
     m_input.get_text().setFillColor(sf::Color(255, 0, 0));
+#endif
     return;
   }
 
@@ -260,7 +262,9 @@ if (in.back() != ')') error = true;
         if (chars != "") {
           m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
           sf::Text txt;
+#ifndef CI
           txt.setFillColor(sf::Color(25, 25, 25));
+#endif
           txt.setFont(sfml_resources::get().get_default_font());
           txt.setString(chars);
           sf::FloatRect bounds = txt.getLocalBounds();
@@ -295,7 +299,9 @@ if (in.back() != ')') error = true;
     if (chars != "") {
       m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
       sf::Text txt;
+#ifndef CI
       txt.setFillColor(sf::Color(25, 25, 25));
+#endif
       txt.setFont(sfml_resources::get().get_default_font());
       txt.setString(chars);
       sf::FloatRect bounds = txt.getLocalBounds();
@@ -309,7 +315,9 @@ if (in.back() != ')') error = true;
     }
   } catch (int e) {
     std::clog << "Exception Nr. " << e << std::endl;
+#ifndef CI
     m_input.get_text().setFillColor(sf::Color(255, 0, 0));
+#endif
   }
 }
 

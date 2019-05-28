@@ -16,3 +16,5 @@ SOURCES += game_state.cpp \
 
 # SFML
 LIBS += -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+
+DEFINES += CI

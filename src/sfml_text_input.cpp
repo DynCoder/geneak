@@ -121,7 +121,9 @@ void sfml_text_input::update() {
 
   if (m_selected) {
     m_shape.setFillColor(m_select_color);
+#ifndef CI
     m_text.setFillColor(m_text_color);
+#endif
     ++m_timer;
   } else {
     m_shape.setFillColor(m_color);
@@ -162,7 +164,7 @@ void sfml_text_input::set_color(sf::Color c) {
 //  }
 }
 
-bool is_normal_char(uint32_t c) {
+bool is_normal_char(uint32_t c) { //!OCLINT
   return (c > 47 && c < 58) ||
          (c > 64 && c < 91) ||
          (c > 96 && c < 123) ||

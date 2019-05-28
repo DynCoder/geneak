@@ -7,7 +7,9 @@ class sfml_line
 {
   public:
   
-    sfml_line(double x = 0.0, double y = 0.0, double to_x = 1.0, double to_y = 1.0, double width = 3.0);
+    sfml_line(double x = 0.0, double y = 0.0, 
+              double to_x = 1.0, double to_y = 1.0, 
+              double width = 3.0);
     
     sf::RectangleShape get_shape();
     
