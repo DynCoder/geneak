@@ -9,6 +9,11 @@ sfml_resources::sfml_resources() {
     if (!m_default_font.loadFromFile(filename))
       throw std::runtime_error("Couldn't find resource " + filename);
   }
+  {
+    std::string filename = "draw.png";
+    if (!m_draw_image.loadFromFile(filename))
+      throw std::runtime_error("Couldn't find resource " + filename);
+  }
 }
 
 sfml_resources &sfml_resources::get() {

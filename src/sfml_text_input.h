@@ -43,6 +43,8 @@ public:
   
   void left();
   void right();
+  
+  void set_text_color(sf::Color c) { m_text_color = c; }
 
 private:
 
@@ -64,6 +66,7 @@ private:
 
   sf::Color m_color;
   sf::Color m_select_color;
+  sf::Color m_text_color;
   
   int m_timer;
 

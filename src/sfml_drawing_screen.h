@@ -40,6 +40,7 @@ private:
     sfml_text_input m_input;
     
 	  sfml_button m_confirm;
+    sf::Sprite m_draw_sprite;
 	
     sf::View m_drawing_view;
     
@@ -52,6 +53,7 @@ private:
     std::vector<sf::Text> m_tree_text;
     
     void update_tree(std::string in);
+    
 };
 
 #endif // SFML_DRAWING_SCREEN_H

@@ -20,6 +20,8 @@ public:
   
   sf::Font& get_default_font() noexcept { return m_default_font; }
   
+  sf::Texture& get_draw_image() noexcept { return m_draw_image; }
+  
   //////////////////////
   
 private:
@@ -33,6 +35,8 @@ private:
   // Resources //
   
   sf::Font m_default_font;
+  
+  sf::Texture m_draw_image;
 
   ///////////////
 

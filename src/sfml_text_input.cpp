@@ -8,7 +8,7 @@ sfml_text_input::sfml_text_input(const double x, const double y,
                          const double height, const double width)
   : m_x{x}, m_y{y}, m_height{height}, m_width{width},
     m_selected{false}, m_str_size{0}, m_limit{55},
-    m_timer{0}, m_pos{0}
+    m_text_color(255, 255, 255), m_timer{0}, m_pos{0}
 {
   m_shape.setSize(sf::Vector2f(m_width,m_height));
   m_shape.setPosition(sf::Vector2f(m_x,m_y));
@@ -71,6 +71,13 @@ void sfml_text_input::select(const sf::RenderWindow& window) {
   m_timer = 300;
 }
 
+/* The delete key doesn't seem to work
+else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Delete) &&
+               static_cast<unsigned>(m_pos) < m_string.size()) {
+      m_string.erase(m_pos, 1);
+    } 
+*/
+
 void sfml_text_input::input(const sf::Event& event, sf::RenderWindow& window) {
   assert(event.type == sf::Event::TextEntered);
   if (m_selected) {
@@ -114,6 +121,7 @@ void sfml_text_input::update() {
 
   if (m_selected) {
     m_shape.setFillColor(m_select_color);
+    m_text.setFillColor(m_text_color);
     ++m_timer;
   } else {
     m_shape.setFillColor(m_color);

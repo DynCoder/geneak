@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cassert>
 #include <functional>
+#include <algorithm>
+#include <vector>
 
 sfml_drawing_screen::sfml_drawing_screen(int ca)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
@@ -14,6 +16,8 @@ sfml_drawing_screen::sfml_drawing_screen(int ca)
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
   m_confirm.get_shape().setFillColor(sf::Color(45, 235, 205));
 
+  m_draw_sprite.setTexture(sfml_resources::get().get_draw_image());
+  
   m_drawing_view = sf::View(sf::Vector2f(m_window.getSize().x / 2,
                                          (m_window.getSize().y / 2) + 50),
                             sf::Vector2f(m_window.getSize().x,
@@ -95,7 +99,6 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
 
         case sf::Keyboard::Return:
           if (m_input.is_selected()) {
-            std::clog << "Updated!" << std::endl;
             update_tree(m_input.get_string());
           }
 
@@ -149,14 +152,16 @@ void sfml_drawing_screen::set_positions() {
   m_tool_bar.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 0)));
   m_drawing_area.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 100)));
   m_input.set_pos(20, 20, m_window);
-  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 50, 20, m_window);
+  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 30, 20, m_window);
+  m_draw_sprite.setPosition(m_window.mapPixelToCoords(sf::Vector2i(
+                                            (((m_window.getSize().x - 40) / 10) * 8) + 30, 20)));
 }
 
 void sfml_drawing_screen::set_sizes() {
   m_tool_bar.setSize(sf::Vector2f(m_window.getSize().x, 100));
   m_drawing_area.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y - 100));
   m_input.set_size(((m_window.getSize().x - 40) / 10) * 8, 50, m_window);
-  m_confirm.set_size(100, 50, m_window);
+  m_confirm.set_size(50, 50, m_window);
 
   float tb_per = 100.0/m_window.getSize().y;
   m_drawing_view.setViewport(sf::FloatRect(0, tb_per, 1, 1 - tb_per));
@@ -175,7 +180,8 @@ void sfml_drawing_screen::draw_objects() {
   m_window.draw(m_input.get_text());
 
   m_window.draw(m_confirm.get_shape());
-  m_window.draw(m_confirm.get_text());
+  //m_window.draw(m_confirm.get_text());
+  m_window.draw(m_draw_sprite);
 
 
   // Draw tree viewer
@@ -215,13 +221,33 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
   m_tree_lines.clear();
   m_tree_text.clear();
   if (in.size() == 0) return;
+  
+  bool error = false;
+  
+  if (in.front() != '(') error = true;
+if (in.back() != ')') error = true;
+  
+  int par = 0;
+  for (char& c : in) {
+    if (c == '(') {
+      par++;
+    }
+    if (c == ')') {
+      par--;
+    }
+  }
+  if (par != 0) error = true;
+  
+  if (error) {
+    m_input.get_text().setFillColor(sf::Color(255, 0, 0));
+    return;
+  }
 
-  {
+  try {
     int parentheses = 0;
     int y = 0;
     std::string chars = "";
-    std::vector<int> strings;
-    std::vector<int> coords;
+    std::vector<std::vector<int>> coords;
     for (char& c : in) {
       if ((c >= 'A' && c <= 'Z') ||
           (c >= 'a' && c <= 'z') ||
@@ -241,28 +267,28 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
           txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
           txt.setPosition((parentheses * 40) + 50, y);
           m_tree_text.push_back(txt);
+          
+          coords.at(parentheses).push_back(y);
           y += 40;
           chars = "";
-          strings.at(parentheses)++;
         }
         if (c == '(') {
           parentheses++;
-          while (static_cast<unsigned>(parentheses + 1) > strings.size()) {
-            strings.push_back(0);
-          }
           while (static_cast<unsigned>(parentheses + 1) > coords.size()) {
-            coords.push_back(-1);
+            coords.push_back({});
           }
-          coords.at(parentheses) = y;
         }
         if (c == ')') {
-          m_tree_lines.push_back(sfml_line(parentheses * 40, coords.at(parentheses),
-                                           parentheses * 40, coords.at(parentheses) +
-                                                            ((strings.at(parentheses) - 1) * 40)));
-          int mid = coords.at(parentheses) + (((strings.at(parentheses) - 1) * 40) / 2);
+          std::vector<int>& x = coords.at(parentheses);
+          std::sort(x.begin(), x.end());
+          m_tree_lines.push_back(sfml_line(parentheses * 40, x.front(),
+                                           parentheses * 40, x.back()));
+          int mid = (x.front() + x.back()) / 2;
           m_tree_lines.push_back(sfml_line((parentheses - 1) * 40, mid,
                                            parentheses * 40, mid));
+          x.clear();
           parentheses--;
+          coords.at(parentheses).push_back(mid);
         }
       }
     }
@@ -276,9 +302,14 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
       txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
       txt.setPosition((parentheses * 40) + 50, y);
       m_tree_text.push_back(txt);
+      
+      coords.at(parentheses).push_back(y);
       y += 40;
       chars = "";
     }
+  } catch (int e) {
+    std::clog << "Exception Nr. " << e << std::endl;
+    m_input.get_text().setFillColor(sf::Color(255, 0, 0));
   }
 }
 
