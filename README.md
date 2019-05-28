@@ -4,6 +4,8 @@
 Branch|[![travis_ci](doc/travis-ci.png)](https://travis-ci.org/Joshua260403/geneak)
 ---|---
 Master|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=master)](https://travis-ci.org/Joshua260403/geneak)
+Backup|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=backup)](https://travis-ci.org/Joshua260403/geneak)
+Release|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=release)](https://travis-ci.org/Joshua260403/geneak)
 
 ## License
 All code in this project is licensed under the GPLv3 license.
