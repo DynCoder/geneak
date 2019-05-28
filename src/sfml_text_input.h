@@ -46,6 +46,12 @@ public:
   
   void set_text_color(sf::Color c) { m_text_color = c; }
 
+  /* TODO view
+  sf::View &get_view() { return m_view; }
+  
+  void update_view();
+  */
+  
 private:
 
   sf::RectangleShape m_shape;
@@ -71,6 +77,8 @@ private:
   int m_timer;
 
   int m_pos;
+  
+  //sf::View m_view; TODO view
   
 };
 

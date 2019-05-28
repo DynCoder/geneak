@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <vector>
 
-sfml_drawing_screen::sfml_drawing_screen(int ca)
+sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
       m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}
 {
@@ -27,6 +27,9 @@ sfml_drawing_screen::sfml_drawing_screen(int ca)
   m_move_right = false;
   m_move_up = false;
   m_move_down = false;
+  
+  m_input.set_string(newick, m_window);
+  update_tree(m_input.get_string());
 }
 
 void sfml_drawing_screen::exec() { //!OCLINT can be complex

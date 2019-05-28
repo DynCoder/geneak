@@ -11,7 +11,7 @@ class sfml_drawing_screen
 {
 public:
 
-    sfml_drawing_screen(int ca);
+    sfml_drawing_screen(int ca = -1, std::string newick = "");
 
     void exec();
 

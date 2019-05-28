@@ -21,6 +21,8 @@ sfml_text_input::sfml_text_input(const double x, const double y,
   m_text.setOrigin(bounds.left + bounds.width/2.0f,
                      bounds.top  + bounds.height/2.0f);
   m_text.setString("");
+  
+  //m_view = sf::View(m_shape.getLocalBounds()); TODO view
 }
 
 void sfml_text_input::set_pos(double x, double y, sf::RenderWindow& window) {
@@ -41,6 +43,13 @@ void sfml_text_input::set_size(double width, double height, sf::RenderWindow& wi
   m_text.setPosition(window.mapPixelToCoords(
       sf::Vector2i(m_x + (m_width / 2), m_y + (m_height / 2))));
 }
+
+/* TODO view
+void sfml_text_input::update_view() {
+  m_view.setViewport(m_shape.getLocalBounds());
+  m_view.setCenter(0, 0);
+}
+*/
 
 void sfml_text_input::set_string(const std::string str, sf::RenderWindow& window) {
   m_string = str;

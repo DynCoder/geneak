@@ -16,6 +16,8 @@ public:
   /// Access the resources
   static sfml_resources &get();
   
+  void load(std::string path);
+  
   // Resource getters //
   
   sf::Font& get_default_font() noexcept { return m_default_font; }
