@@ -36,12 +36,12 @@ int main(int argc, char **argv) { //!OCLINT
   std::string tree;
   std::string path = "";
   for (auto &arg : args) {
-    if (arg.size() > 4) {
+    if (arg.size() > 4) { //!OCLINT for exception safety non-collapsible
       if (arg.substr(arg.size() - 4) == ".gnk") {
+        
         path = args.at(0);
         if ((!std::count(path.begin(), path.end(), '/')) &&
             (!std::count(path.begin(), path.end(), '\\'))) {
-          std::clog << path << std::endl;
           return 404;
         }
         while (path.back() != '/' && path.back() != '\\') {
@@ -57,6 +57,7 @@ int main(int argc, char **argv) { //!OCLINT
           tree = "";
           std::clog << "Couldn't open .gnk file" << std::endl;
         }
+        
       }
     }
   }
