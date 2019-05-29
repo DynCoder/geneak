@@ -24,7 +24,7 @@ The idea is to create a piece of software that can be used to create filogenetic
 - Draw a tree in the software
 - Draw a tree following input (see below for example)
 - Give a formula from input (the example below in reverse)
-- Export the tree into an image
+- Open `.gnk` files
 
 ##### Example:
 ```
