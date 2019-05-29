@@ -65,11 +65,11 @@ void sfml_window_manager::set_state(game_state s) {
 }
 
 int get_video_mode() {
-#ifndef NDEBUG
+//#ifndef NDEBUG
   return sf::Style::Default;
-#else
-  return sf::Style::Fullscreen;
-#endif
+//#else
+//  return sf::Style::Fullscreen;
+//#endif
 }
 
 bool active(game_state s) {
