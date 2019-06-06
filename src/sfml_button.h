@@ -39,7 +39,7 @@ private:
   double m_y;
 
   double m_height;
-  double m_width;
+  double m_width; 
 
   std::string m_string;
 

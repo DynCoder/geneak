@@ -49,6 +49,17 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
 
     m_input.update();
 
+    bool hovering = false;
+    for (auto& v : m_add_nodes) {
+      if (hover(m_window, v.x, v.y, 20) && !hovering) {
+        m_edit_buttons.push_back(sfml_button(v.x, v.y, 40, 40));
+        m_edit_buttons.back().set_string("+", m_window);
+        hovering = true;
+      }
+    }
+    if (!hovering) m_edit_buttons.clear();
+    //std::clog << m_add_nodes.size() << std::endl; TODO fix hover button thing
+    
     set_positions();
     draw_objects();
 
@@ -139,6 +150,14 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       if (m_confirm.is_clicked(event, m_window)) {
         update_tree(m_input.get_string());
       }
+      for (auto &button : m_edit_buttons) {
+        if (button.is_clicked(event, m_window)) {
+          std::string str = m_input.get_string();
+          str.insert(get_string_pos(button), ", X");
+          m_input.set_string(str, m_window);
+          update_tree(m_input.get_string());
+        }
+      }
       break;
 
     case sf::Event::TextEntered:
@@ -202,6 +221,11 @@ void sfml_drawing_screen::draw_objects() {
   for (auto &txt : m_tree_text) {
     m_window.draw(txt);
   }
+  
+  for (auto &button : m_edit_buttons) {
+    m_window.draw(button.get_shape());
+    m_window.draw(button.get_text());
+  }
 
   ///////////////
 
@@ -253,6 +277,8 @@ if (in.back() != ')') error = true;
     int y = 0;
     std::string chars = "";
     std::vector<std::vector<int>> coords;
+    int i = 0;
+    m_add_nodes.clear();
     for (char& c : in) {
       if ((c >= 'A' && c <= 'Z') ||
           (c >= 'a' && c <= 'z') ||
@@ -293,11 +319,13 @@ if (in.back() != ')') error = true;
           int mid = (x.front() + x.back()) / 2;
           m_tree_lines.push_back(sfml_line((parentheses - 1) * 40, mid,
                                            parentheses * 40, mid));
+          m_add_nodes.push_back(sf::Vector3f(parentheses * 40, x.back(), i));
           x.clear();
           parentheses--;
           coords.at(parentheses).push_back(mid);
         }
       }
+      i++;
     }
     if (chars != "") {
       m_tree_lines.push_back(sfml_line(parentheses * 40, y, (parentheses + 1) * 40, y));
@@ -324,3 +352,17 @@ if (in.back() != ')') error = true;
   }
 }
 
+int sfml_drawing_screen::get_string_pos(sfml_button &button) {
+  for (auto &v : m_add_nodes) {
+    if (sf::Vector2f(v.x, v.x) == button.get_pos()) {
+      return v.z;
+    }
+  }
+  return -1;
+}
+
+bool hover(sf::RenderWindow& window, float x, float y, int range) {
+  sf::Vector2i mp = sf::Mouse::getPosition(window);
+  return mp.x > x - range && mp.x < x + range &&
+         mp.y > y - range && mp.y < y + range;
+}

@@ -51,9 +51,17 @@ private:
     
     std::vector<sfml_line> m_tree_lines;
     std::vector<sf::Text> m_tree_text;
+    std::vector<sf::Vector3f> m_add_nodes;
+    std::vector<sfml_button> m_edit_buttons;
     
     void update_tree(std::string in);
     
+    int get_string_pos(sfml_button &button);
+    
 };
+
+bool hover(sf::RenderWindow& window, float x, float y, int range);
+
+int get_string_pos(sfml_button &button);
 
 #endif // SFML_DRAWING_SCREEN_H
