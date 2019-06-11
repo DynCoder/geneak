@@ -7,6 +7,7 @@
 #include <functional>
 #include <algorithm>
 #include <vector>
+#include <chrono>
 
 sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
@@ -27,6 +28,8 @@ sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
   m_move_right = false;
   m_move_up = false;
   m_move_down = false;
+  
+  m_clicked = false;
   
   m_input.set_string(newick, m_window);
   update_tree(m_input.get_string());
@@ -50,15 +53,27 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
     m_input.update();
 
     bool hovering = false;
-    for (auto& v : m_add_nodes) {
-      if (hover(m_window, v.x, v.y, 20) && !hovering) {
-        m_edit_buttons.push_back(sfml_button(v.x, v.y, 40, 40));
-        m_edit_buttons.back().set_string("+", m_window);
+    sf::View tmp_view = m_window.getView();
+    m_window.setView(m_drawing_view);
+    for (auto &v : m_add_nodes) {
+      if (hover(v.x, v.y, 7.5) && !hovering) {
+        m_edit_buttons.push_back(sfml_button(v.x - 7.5, v.y - 7.5, 15, 15));
+        m_edit_buttons.back().set_string("", m_window); // TODO add sprite onto button
         hovering = true;
       }
     }
-    if (!hovering) m_edit_buttons.clear();
-    //std::clog << m_add_nodes.size() << std::endl; TODO fix hover button thing
+    for (auto &v : m_long_nodes) {
+      if (hover(v.x.x, v.x.y, 7.5) && !hovering) {
+        m_long_buttons.push_back(sfml_button(v.x.x - 7.5, v.x.y - 7.5, 15, 15));
+        m_long_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        hovering = true;
+      }
+    }
+    if (!hovering) {
+      m_edit_buttons.clear();
+      m_long_buttons.clear();
+    }
+    m_window.setView(tmp_view);
     
     set_positions();
     draw_objects();
@@ -151,13 +166,31 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
         update_tree(m_input.get_string());
       }
       for (auto &button : m_edit_buttons) {
-        if (button.is_clicked(event, m_window)) {
+        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
+          m_clicked = true;
           std::string str = m_input.get_string();
           str.insert(get_string_pos(button), ", X");
           m_input.set_string(str, m_window);
           update_tree(m_input.get_string());
         }
       }
+      for (auto &button : m_long_buttons) {
+        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
+          m_clicked = true;
+          std::string str = m_input.get_string();
+          sf::Vector2i p = get_par_pos(button);
+          str.insert(p.x, "(");
+          str.insert(p.y, ")");
+          m_input.set_string(str, m_window);
+          update_tree(m_input.get_string());
+        }
+      }
+      break;
+      
+    case sf::Event::MouseButtonReleased:
+      m_clicked = false;
       break;
 
     case sf::Event::TextEntered:
@@ -226,6 +259,10 @@ void sfml_drawing_screen::draw_objects() {
     m_window.draw(button.get_shape());
     m_window.draw(button.get_text());
   }
+  for (auto &button : m_long_buttons) {
+    m_window.draw(button.get_shape());
+    m_window.draw(button.get_text());
+  }
 
   ///////////////
 
@@ -247,23 +284,29 @@ void sfml_drawing_screen::close() {
 void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too complicated
   m_tree_lines.clear();
   m_tree_text.clear();
-  if (in.size() == 0) return;
   
   bool error = false;
   
-  if (in.front() != '(') error = true;
-if (in.back() != ')') error = true;
-  
-  int par = 0;
-  for (char& c : in) {
-    if (c == '(') {
-      par++;
-    }
-    if (c == ')') {
-      par--;
-    }
+  if (in.size() < 3) {
+    error = true;
+    m_input.set_string("(Q)", m_window);
   }
-  if (par != 0) error = true;
+  
+  if (!error) {
+    if (in.front() != '(') error = true;
+    if (in.back() != ')') error = true;
+    
+    int par = 0;
+    for (char& c : in) {
+      if (c == '(') {
+        par++;
+      }
+      if (c == ')') {
+        par--;
+      }
+    }
+    if (par != 0) error = true;
+  }
   
   if (error) {
 #ifndef CI
@@ -278,12 +321,15 @@ if (in.back() != ')') error = true;
     std::string chars = "";
     std::vector<std::vector<int>> coords;
     int i = 0;
+    int o = 0;
     m_add_nodes.clear();
+    m_long_nodes.clear();
     for (char& c : in) {
       if ((c >= 'A' && c <= 'Z') ||
           (c >= 'a' && c <= 'z') ||
           (c == ' ')) {
         chars += c;
+        o = i;
         if (chars.at(0) == ' ') {
           chars = "";
         }
@@ -300,6 +346,9 @@ if (in.back() != ')') error = true;
           txt.setOrigin(0, bounds.top  + bounds.height/2.0f);
           txt.setPosition((parentheses * 40) + 50, y);
           m_tree_text.push_back(txt);
+          
+          m_long_nodes.push_back(sf::Vector2<sf::Vector2f>(sf::Vector2f((parentheses + 1) * 40, y),
+                                                           sf::Vector2f(o, i + 1)));
           
           coords.at(parentheses).push_back(y);
           y += 40;
@@ -354,15 +403,31 @@ if (in.back() != ')') error = true;
 
 int sfml_drawing_screen::get_string_pos(sfml_button &button) {
   for (auto &v : m_add_nodes) {
-    if (sf::Vector2f(v.x, v.x) == button.get_pos()) {
+    if (sf::Vector2f(v.x - 7.5, v.y - 7.5) == button.get_pos()) {
       return v.z;
     }
   }
   return -1;
 }
 
-bool hover(sf::RenderWindow& window, float x, float y, int range) {
-  sf::Vector2i mp = sf::Mouse::getPosition(window);
+sf::Vector2i sfml_drawing_screen::get_par_pos(sfml_button &button) {
+  for (auto &v : m_long_nodes) {
+    if (sf::Vector2f(v.x.x - 7.5, v.x.y - 7.5) == button.get_pos()) {
+      return sf::Vector2i(v.y);
+    }
+  }
+  return sf::Vector2i(-1, -1);
+}
+
+bool sfml_drawing_screen::hover(float x, float y, float range) {
+  sf::Vector2f mp = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window), m_drawing_view);
   return mp.x > x - range && mp.x < x + range &&
          mp.y > y - range && mp.y < y + range;
+}
+
+std::string get_time() {
+  std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                            std::chrono::system_clock::now().time_since_epoch());
+  std::string ts = std::to_string(ms.count());
+  return ts;
 }

@@ -30,6 +30,8 @@ int main(int argc, char **argv) { //!OCLINT
   assert(1 == 2);
 #endif
 
+  std::cout << get_time() << std::endl;
+
   const std::vector<std::string> args(argv, argv + argc);
   int close_at = -1;
   

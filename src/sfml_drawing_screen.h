@@ -53,15 +53,20 @@ private:
     std::vector<sf::Text> m_tree_text;
     std::vector<sf::Vector3f> m_add_nodes;
     std::vector<sfml_button> m_edit_buttons;
+    std::vector<sf::Vector2<sf::Vector2f>> m_long_nodes;
+    std::vector<sfml_button> m_long_buttons;
+    
+    bool m_clicked;
     
     void update_tree(std::string in);
     
     int get_string_pos(sfml_button &button);
+    sf::Vector2i get_par_pos(sfml_button &button);
     
+    bool hover(float x, float y, float range);
+
 };
 
-bool hover(sf::RenderWindow& window, float x, float y, int range);
-
-int get_string_pos(sfml_button &button);
+std::string get_time();
 
 #endif // SFML_DRAWING_SCREEN_H
