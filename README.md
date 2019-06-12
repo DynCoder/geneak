@@ -22,8 +22,8 @@ The idea is to create a piece of software that can be used to create filogenetic
 ## Features
 #### The software should have at least the following features:
 - Draw a tree in the software
-- Draw a tree following input (see below for example)
-- Give a formula from input (the example below in reverse)
+- Generate a formula from input (see example below)
+- Save the formula to a `.gnk` file
 - Open `.gnk` files
 
 ##### Example:
