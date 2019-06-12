@@ -43,9 +43,6 @@ The idea is to create a piece of software that can be used to create filogenetic
         -- F
 ```
 
-#### Extra features:
-- Extinct species / Timeline
-
 ## References
 * [license](LICENSE)
 * [team](doc/team.md)
