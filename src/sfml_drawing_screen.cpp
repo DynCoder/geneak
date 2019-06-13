@@ -3,11 +3,18 @@
 #include "sfml_resources.h"
 #include "sfml_line.h"
 #include <iostream>
+#include <fstream>
 #include <cassert>
 #include <functional>
 #include <algorithm>
 #include <vector>
 #include <chrono>
+
+/* TODO
+- Add new tree button (adds parentheses at the end)
+- Remove branch button
+- Save button sprite
+*/
 
 sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
     : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
@@ -17,7 +24,7 @@ sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
   m_confirm.get_shape().setFillColor(sf::Color(45, 235, 205));
 
-  m_draw_sprite.setTexture(sfml_resources::get().get_draw_image());
+  m_save_sprite.setTexture(sfml_resources::get().get_draw_image());
   
   m_drawing_view = sf::View(sf::Vector2f(m_window.getSize().x / 2,
                                          (m_window.getSize().y / 2) + 50),
@@ -164,6 +171,30 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       m_input.select(m_window);
       if (m_confirm.is_clicked(event, m_window)) {
         update_tree(m_input.get_string());
+        std::ofstream ofs;
+        std::string path;
+        if (m_path.back() == '\\') {
+          path = m_path + "saves\\";
+        } else if (m_path.back() == '/') {
+          path = m_path + "saves/";
+        } else {
+#ifdef WIN32
+          path = "saves\\";
+#else
+          path = "saves/";
+#endif
+        }
+        path += "geneak-";
+        path += get_time();
+        path += ".gnk";
+        std::clog << path << std::endl;
+        ofs.open(path, std::fstream::out);
+        if (ofs.is_open()) {
+          ofs << m_input.get_string() << std::endl;
+          ofs.close();
+        } else {
+          std::clog << "Couldn't create savefile!" << std::endl;
+        }
       }
       for (auto &button : m_edit_buttons) {
         sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
@@ -207,9 +238,8 @@ void sfml_drawing_screen::set_positions() {
   m_tool_bar.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 0)));
   m_drawing_area.setPosition(m_window.mapPixelToCoords(sf::Vector2i(0, 100)));
   m_input.set_pos(20, 20, m_window);
-  m_confirm.set_pos((((m_window.getSize().x - 40) / 10) * 8) + 30, 20, m_window);
-  m_draw_sprite.setPosition(m_window.mapPixelToCoords(sf::Vector2i(
-                                            (((m_window.getSize().x - 40) / 10) * 8) + 30, 20)));
+  m_confirm.set_pos(m_window.getSize().x - 70, 20, m_window);
+  m_save_sprite.setPosition(m_window.mapPixelToCoords(sf::Vector2i(m_window.getSize().x - 70, 20)));
 }
 
 void sfml_drawing_screen::set_sizes() {
@@ -236,7 +266,7 @@ void sfml_drawing_screen::draw_objects() {
 
   m_window.draw(m_confirm.get_shape());
   //m_window.draw(m_confirm.get_text());
-  m_window.draw(m_draw_sprite);
+  m_window.draw(m_save_sprite);
 
 
   // Draw tree viewer

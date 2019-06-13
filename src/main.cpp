@@ -17,8 +17,9 @@ void test() {
   test_normal_char();
 }
 
-int show_sfml_drawing_screen(int ca, std::string tree) {
+int show_sfml_drawing_screen(int ca, std::string tree, std::string path) {
   sfml_drawing_screen ds(ca, tree);
+  ds.set_path(path);
   ds.exec();
   return 0;
 }
@@ -36,20 +37,22 @@ int main(int argc, char **argv) { //!OCLINT
   int close_at = -1;
   
   std::string tree;
-  std::string path = "";
+  std::string path = args.at(0);
+  
+  std::clog << path << std::endl;
+  
+  if ((!std::count(path.begin(), path.end(), '/')) &&
+      (!std::count(path.begin(), path.end(), '\\'))) {
+    path = "";
+  } else {
+    while (path.back() != '/' && path.back() != '\\') {
+      path.pop_back();
+    }
+  }
+  
   for (auto &arg : args) {
     if (arg.size() > 4) { //!OCLINT for exception safety non-collapsible
       if (arg.substr(arg.size() - 4) == ".gnk") {
-        
-        path = args.at(0);
-        if ((!std::count(path.begin(), path.end(), '/')) &&
-            (!std::count(path.begin(), path.end(), '\\'))) {
-          return 404;
-        }
-        while (path.back() != '/' && path.back() != '\\') {
-          path.pop_back();
-        }
-        
         std::ifstream sfile;
         sfile.open(arg);
         if (sfile.is_open()) {
@@ -59,7 +62,6 @@ int main(int argc, char **argv) { //!OCLINT
           tree = "";
           std::clog << "Couldn't open .gnk file" << std::endl;
         }
-        
       }
     }
   }
@@ -85,7 +87,7 @@ int main(int argc, char **argv) { //!OCLINT
   
   while (sfml_window_manager::get().get_window().isOpen()) {
     if (sfml_window_manager::get().get_state() == game_state::drawing) {
-      show_sfml_drawing_screen(close_at, tree);
+      show_sfml_drawing_screen(close_at, tree, path);
     }
   }
   

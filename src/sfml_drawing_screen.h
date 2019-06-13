@@ -27,6 +27,8 @@ public:
     void set_sizes();
     
     void draw_objects();
+    
+    void set_path(std::string p) { m_path = p; }
 
 private:
 
@@ -40,7 +42,7 @@ private:
     sfml_text_input m_input;
     
 	  sfml_button m_confirm;
-    sf::Sprite m_draw_sprite;
+    sf::Sprite m_save_sprite;
 	
     sf::View m_drawing_view;
     
@@ -65,6 +67,8 @@ private:
     
     bool hover(float x, float y, float range);
 
+    std::string m_path;
+    
 };
 
 std::string get_time();
