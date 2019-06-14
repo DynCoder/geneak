@@ -17,13 +17,13 @@ The name `geneak` comes from the basque word for genes.\
 ___I am not going to explain why basque.___
 
 ## the idea
-The idea is to create a piece of software that can be used to create filogenetic trees in a matter of minutes. This is to solve the problem of biologists always having to draw the trees on a piece of paper and it ending up very messy.
+The idea is to create a piece of software that can be used to draw filogenies in a matter of minutes. This is to solve the problem of biologists always having to draw filogenies on a piece of paper and it ending up very messy.
 
 ## Features
 #### The software should have at least the following features:
 - Draw a tree in the software
 - Generate a formula from input (see example below)
-- Save the formula to a `.gnk` file
+- Save tnewick to a `.gnk` file
 - Open `.gnk` files
 
 ##### Example:
