@@ -11,7 +11,7 @@ class sfml_drawing_screen
 {
 public:
 
-    sfml_drawing_screen(int ca = -1, std::string newick = "");
+    sfml_drawing_screen(std::string newick = "");
 
     void exec();
 
@@ -31,8 +31,6 @@ public:
     void set_path(std::string p) { m_path = p; }
 
 private:
-
-    int close_at;
     
     sf::RenderWindow& m_window;
 

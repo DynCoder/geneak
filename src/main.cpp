@@ -17,8 +17,8 @@ void test() {
   test_normal_char();
 }
 
-int show_sfml_drawing_screen(int ca, std::string tree, std::string path) {
-  sfml_drawing_screen ds(ca, tree);
+int show_sfml_drawing_screen(std::string tree, std::string path) {
+  sfml_drawing_screen ds(tree);
   ds.set_path(path);
   ds.exec();
   return 0;
@@ -82,12 +82,15 @@ int main(int argc, char **argv) { //!OCLINT
   }
   
   if (std::count(std::begin(args), std::end(args), "--ci")) {
-    close_at = 1000;
+    std::clog << "CI argument passed!\n";
+#ifdef CI
+    std::clog << "CI defined!\n";
+    
   }
   
   while (sfml_window_manager::get().get_window().isOpen()) {
     if (sfml_window_manager::get().get_state() == game_state::drawing) {
-      show_sfml_drawing_screen(close_at, tree, path);
+      show_sfml_drawing_screen(tree, path);
     }
   }
   

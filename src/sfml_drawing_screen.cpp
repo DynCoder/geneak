@@ -16,8 +16,8 @@
 - Save button sprite
 */
 
-sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
-    : close_at{ ca }, m_window{ sfml_window_manager::get().get_window() },
+sfml_drawing_screen::sfml_drawing_screen(std::string newick)
+    : m_window{ sfml_window_manager::get().get_window() },
       m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
@@ -44,7 +44,7 @@ sfml_drawing_screen::sfml_drawing_screen(int ca, std::string newick)
 
 void sfml_drawing_screen::exec() { //!OCLINT can be complex
   set_sizes();
-  while (active(game_state::drawing) && close_at != 0) {
+  while (active(game_state::drawing)) {
     sf::Event event;
     while (m_window.pollEvent(event))
     {
@@ -84,10 +84,11 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
     
     set_positions();
     draw_objects();
-
-    if (close_at > 0) --close_at;
+#ifdef CI
+    close();
+    return;
+#endif
   }
-  if (close_at == 0) close();
 }
 
 void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be complex
