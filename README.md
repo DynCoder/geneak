@@ -22,7 +22,7 @@ The idea is to create a piece of software that can be used to draw filogenies in
 #### The software should have at least the following features:
 - Draw a tree in the software
 - Generate a formula from input (see example below)
-- Save tnewick to a `.gnk` file
+- Save the newick to a `.gnk` file
 - Open `.gnk` files
 
 ##### Example:
