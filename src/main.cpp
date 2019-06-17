@@ -68,14 +68,14 @@ int main(int argc, char **argv) { //!OCLINT
   sfml_resources::get().load(path);
   
   if (std::count(std::begin(args), std::end(args), "--version")) {
-    // Travis: 2.1
+    // Travis: 2.3.2
     // RuG: 2.3.2
     std::cout
       << "SFML version: " << SFML_VERSION_MAJOR
       << "." << SFML_VERSION_MINOR
-      #if(SFML_VERSION_MINOR > 1)
+#if(SFML_VERSION_MINOR > 1)
       << "." << SFML_VERSION_PATCH
-      #endif
+#endif
       << std::endl
     ;
     return 0;
@@ -85,7 +85,7 @@ int main(int argc, char **argv) { //!OCLINT
     std::clog << "CI argument passed!\n";
 #ifdef CI
     std::clog << "CI defined!\n";
-    
+#endif
   }
   
   while (sfml_window_manager::get().get_window().isOpen()) {
