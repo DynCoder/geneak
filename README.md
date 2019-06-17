@@ -8,8 +8,7 @@ Release|[![Build Status](https://travis-ci.org/Joshua260403/geneak.svg?branch=re
 
 ## License
 All code in this project is licensed under the GPLv3 license.
-Refer to [LICENSE](LICENSE) for the full license.\
-___(Especially when you're from the other group working on this project)___
+Refer to [LICENSE](LICENSE) for the full license.
 
 ## the name
 The name `geneak` comes from the basque word for genes.\
