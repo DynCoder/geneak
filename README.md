@@ -44,4 +44,3 @@ The idea is to create a piece of software that can be used to draw filogenies in
 
 ## References
 * [license](LICENSE)
-* [team](doc/team.md)
