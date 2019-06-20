@@ -55,10 +55,11 @@ private:
     std::vector<sfml_button> m_edit_buttons;
     std::vector<sf::Vector2<sf::Vector2f>> m_long_nodes;
     std::vector<sfml_button> m_long_buttons;
+    std::vector<sfml_button> m_short_buttons;
     
     bool m_clicked;
     
-    void update_tree(std::string in);
+    int update_tree(std::string in);
     
     int get_string_pos(sfml_button &button);
     sf::Vector2i get_par_pos(sfml_button &button);

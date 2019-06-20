@@ -34,7 +34,6 @@ int main(int argc, char **argv) { //!OCLINT
   std::cout << get_time() << std::endl;
 
   const std::vector<std::string> args(argv, argv + argc);
-  int close_at = -1;
   
   std::string tree;
   std::string path = args.at(0);

@@ -70,15 +70,21 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
       }
     }
     for (auto &v : m_long_nodes) {
-      if (hover(v.x.x, v.x.y, 7.5) && !hovering) {
+      if ((hover(v.x.x, v.x.y, 7.5) || hover(v.x.x - 20, v.x.y, 7.5) ||
+           hover(v.x.x - 10, v.x.y, 7.5)) && !hovering) {
         m_long_buttons.push_back(sfml_button(v.x.x - 7.5, v.x.y - 7.5, 15, 15));
         m_long_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        
+        m_short_buttons.push_back(sfml_button(v.x.x - 27.5, v.x.y - 7.5, 15, 15));
+        m_short_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        
         hovering = true;
       }
     }
     if (!hovering) {
       m_edit_buttons.clear();
       m_long_buttons.clear();
+      m_short_buttons.clear();
     }
     m_window.setView(tmp_view);
     
@@ -86,12 +92,12 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
     draw_objects();
 #ifdef CI
     close();
-    return;
 #endif
   }
 }
 
 void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be complex
+  int u = 0;
   switch (event.type) {
     case sf::Event::Closed:
         close();
@@ -219,6 +225,42 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
           update_tree(m_input.get_string());
         }
       }
+      for (auto &button : m_short_buttons) { // TODO change this function
+        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
+          m_clicked = true;
+          std::string str = m_input.get_string();
+          std::clog << str << std::endl;
+          sf::Vector2i p = get_par_pos(m_long_buttons.at(u));
+          if (p.x < 2) p.x = 2;
+          if (str.at(p.x - 2) == '(' && str.at(p.y - 1) == ')') {
+            str.erase(p.x - 2, 1);
+            str.erase(p.y - 2, 1);
+            m_input.set_string(str, m_window);
+          } else if (str.at(p.x - 2) == '(') {
+            int s = p.y;
+            while (str.at(s - 1) != ')') {
+              s++;
+            }
+            str.erase(p.x - 2, 1);
+            str.erase(s - 2, 1);
+            m_input.set_string(str, m_window);
+          } else if (str.at(p.y - 2) == ')') {
+            int s = p.x;
+            while (str.at(s - 2) != '(') {
+              s--;
+            }
+            str.erase(s - 2, 1);
+            str.erase(p.y - 2, 1);
+            m_input.set_string(str, m_window);
+          }
+          if (update_tree(m_input.get_string()) > 1) {
+            m_input.set_string("", m_window);
+            update_tree(m_input.get_string());
+          }
+        }
+        u++;
+      }
       break;
       
     case sf::Event::MouseButtonReleased:
@@ -294,6 +336,10 @@ void sfml_drawing_screen::draw_objects() {
     m_window.draw(button.get_shape());
     m_window.draw(button.get_text());
   }
+  for (auto &button : m_short_buttons) {
+    m_window.draw(button.get_shape());
+    m_window.draw(button.get_text());
+  }
 
   ///////////////
 
@@ -312,15 +358,14 @@ void sfml_drawing_screen::close() {
   m_window.close();
 }
 
-void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too complicated
+int sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too complicated
   m_tree_lines.clear();
   m_tree_text.clear();
   
   bool error = false;
   
-  if (in.size() < 3) {
+  if (in.size() < 3 && in != "") {
     error = true;
-    m_input.set_string("(Q)", m_window);
   }
   
   if (!error) {
@@ -343,7 +388,11 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
 #ifndef CI
     m_input.get_text().setFillColor(sf::Color(255, 0, 0));
 #endif
-    return;
+    return 2;
+  }
+  
+  if (in == "") {
+    return 1;
   }
 
   try {
@@ -429,7 +478,9 @@ void sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too co
 #ifndef CI
     m_input.get_text().setFillColor(sf::Color(255, 0, 0));
 #endif
+    return 3;
   }
+  return 0;
 }
 
 int sfml_drawing_screen::get_string_pos(sfml_button &button) {
