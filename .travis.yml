@@ -46,16 +46,8 @@ install:
   # SLOCcount
   - sudo apt-get install sloccount
 
-# Xenial
 services:
- - xvfb
-
-# Trusty
-# Start virtual X server
-# before_script:
-#  - "export DISPLAY=:99.0"
-#  - "sh -e /etc/init.d/xvfb start"
-#  - sleep 3 # give xvfb some time to start
+  - xvfb
 
 script:
   # Build and run the tests, the hard way
