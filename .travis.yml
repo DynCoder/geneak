@@ -42,7 +42,7 @@ install:
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # OCLint
-  - ./scripts/install_oclint || true
+  - ./scripts/install_oclint
   # SLOCcount
   - sudo apt-get install sloccount
 
@@ -64,7 +64,7 @@ script:
   - cppcheck --quiet --error-exitcode=1 . 
   # Call OCLint
   - cd ..
-  - ./scripts/do_oclint
+  - ./scripts/do_oclint || true
   # SLOCcount
   - rm -rf oclint-0.10.3 oclint-0.10.3-x86_64-linux-3.13.0-74-generic.tar.gz oclint.log
   - cd ..; sloccount $my_github; cd $my_github
