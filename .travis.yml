@@ -42,7 +42,7 @@ install:
   # cppcheck
   - sudo apt-get install -qq cppcheck
   # OCLint
-  - ./scripts/install_oclint
+  - ./scripts/install_oclint || true
   # SLOCcount
   - sudo apt-get install sloccount
 
