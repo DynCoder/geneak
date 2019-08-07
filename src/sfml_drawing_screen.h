@@ -56,6 +56,8 @@ private:
     std::vector<sf::Vector2<sf::Vector2f>> m_long_nodes;
     std::vector<sfml_button> m_long_buttons;
     std::vector<sfml_button> m_short_buttons;
+    std::vector<sfml_button> m_end_buttons;
+    int m_end_y;
     
     bool m_clicked;
     

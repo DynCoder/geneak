@@ -11,14 +11,14 @@
 #include <chrono>
 
 /* TODO
-- Add new tree button (adds parentheses at the end)
-- Remove branch button
-- Save button sprite
+- Button sprites
+- m_short_buttons for junctions
+- Giving branches a different LETTER (names will mess up the edit buttons' functionality rn)
 */
 
 sfml_drawing_screen::sfml_drawing_screen(std::string newick)
     : m_window{ sfml_window_manager::get().get_window() },
-      m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}
+      m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}, m_end_y{ 0 }
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
@@ -40,6 +40,7 @@ sfml_drawing_screen::sfml_drawing_screen(std::string newick)
   
   m_input.set_string(newick, m_window);
   update_tree(m_input.get_string());
+  m_end_buttons.push_back(sfml_button(0, m_end_y, 30, 30));
 }
 
 void sfml_drawing_screen::exec() { //!OCLINT can be complex
@@ -59,34 +60,45 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
 
     m_input.update();
 
-    bool hovering = false;
+
+    m_edit_buttons.clear();
+    m_long_buttons.clear();
+    m_short_buttons.clear();
+    m_end_buttons.clear();
+    
     sf::View tmp_view = m_window.getView();
     m_window.setView(m_drawing_view);
     for (auto &v : m_add_nodes) {
-      if (hover(v.x, v.y, 7.5) && !hovering) {
+      if (hover(v.x, v.y, 7.5)) {
         m_edit_buttons.push_back(sfml_button(v.x - 7.5, v.y - 7.5, 15, 15));
         m_edit_buttons.back().set_string("", m_window); // TODO add sprite onto button
-        hovering = true;
       }
     }
     for (auto &v : m_long_nodes) {
       if ((hover(v.x.x, v.x.y, 7.5) || hover(v.x.x - 20, v.x.y, 7.5) ||
-           hover(v.x.x - 10, v.x.y, 7.5)) && !hovering) {
+           hover(v.x.x - 10, v.x.y, 7.5))) {
         m_long_buttons.push_back(sfml_button(v.x.x - 7.5, v.x.y - 7.5, 15, 15));
         m_long_buttons.back().set_string("", m_window); // TODO add sprite onto button
         
         m_short_buttons.push_back(sfml_button(v.x.x - 27.5, v.x.y - 7.5, 15, 15));
         m_short_buttons.back().set_string("", m_window); // TODO add sprite onto button
-        
-        hovering = true;
       }
     }
-    if (!hovering) {
-      m_edit_buttons.clear();
-      m_long_buttons.clear();
-      m_short_buttons.clear();
-    }
+    m_end_buttons.push_back(sfml_button(0, m_end_y, 30, 30));
+    m_end_buttons.back().set_string("", m_window); // TODO add sprite onto button
     m_window.setView(tmp_view);
+    
+    {
+      std::string str = m_input.get_string();
+      if (str.size() < 3) {
+        str = "";
+        m_edit_buttons.clear();
+        m_long_buttons.clear();
+        m_short_buttons.clear();
+      }
+      m_input.set_string(str, m_window);
+      update_tree(m_input.get_string());
+    }
     
     set_positions();
     draw_objects();
@@ -123,20 +135,24 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
           break;
 
         case sf::Keyboard::Left:
+        case sf::Keyboard::A:
           m_input.left();
           if (!m_input.is_selected()) m_move_left = true;
           break;
 
         case sf::Keyboard::Right:
+        case sf::Keyboard::D:
           m_input.right();
           if (!m_input.is_selected()) m_move_right = true;
           break;
 
         case sf::Keyboard::Up:
+        case sf::Keyboard::W:
           if (!m_input.is_selected()) m_move_up = true;
           break;
 
         case sf::Keyboard::Down:
+        case sf::Keyboard::S:
           if (!m_input.is_selected()) m_move_down = true;
           break;
 
@@ -154,18 +170,22 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       switch (event.key.code)
         {
           case sf::Keyboard::Left:
+          case sf::Keyboard::A:
             m_move_left = false;
             break;
 
           case sf::Keyboard::Right:
+          case sf::Keyboard::D:
             m_move_right = false;
             break;
 
           case sf::Keyboard::Up:
+          case sf::Keyboard::W:
             m_move_up = false;
             break;
 
           case sf::Keyboard::Down:
+          case sf::Keyboard::S:
             m_move_down = false;
             break;
 
@@ -175,7 +195,9 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       break;
 
     case sf::Event::MouseButtonPressed:
+#ifndef NDEBUG
       m_input.select(m_window);
+#endif
       if (m_confirm.is_clicked(event, m_window)) {
         update_tree(m_input.get_string());
         std::ofstream ofs;
@@ -225,41 +247,50 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
           update_tree(m_input.get_string());
         }
       }
-      for (auto &button : m_short_buttons) { // TODO change this function
+      for (auto &button : m_short_buttons) {
         sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
         if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
           m_clicked = true;
           std::string str = m_input.get_string();
-          std::clog << str << std::endl;
           sf::Vector2i p = get_par_pos(m_long_buttons.at(u));
-          if (p.x < 2) p.x = 2;
-          if (str.at(p.x - 2) == '(' && str.at(p.y - 1) == ')') {
-            str.erase(p.x - 2, 1);
-            str.erase(p.y - 2, 1);
-            m_input.set_string(str, m_window);
-          } else if (str.at(p.x - 2) == '(') {
-            int s = p.y;
-            while (str.at(s - 1) != ')') {
-              s++;
+          if (str.at(p.x - 1) == '(' && str.at(p.x + 1) == ')') {
+            str.erase(p.x - 1, 1);
+            str.erase(p.x, 1);
+            std::string newstr = "";
+            int pa = 0;
+            for (auto c : str) {
+              if (c == '(') pa++;
+              if (pa > 0) newstr += c;
+              if (c == ')') pa--;
             }
-            str.erase(p.x - 2, 1);
-            str.erase(s - 2, 1);
+            m_input.set_string(newstr, m_window);
+            update_tree(m_input.get_string());
+          } else if (str.at(p.x + 1) == ')') {
+            str.erase(p.x - 2, 3);
             m_input.set_string(str, m_window);
-          } else if (str.at(p.y - 2) == ')') {
-            int s = p.x;
-            while (str.at(s - 2) != '(') {
-              s--;
-            }
-            str.erase(s - 2, 1);
-            str.erase(p.y - 2, 1);
+            update_tree(m_input.get_string());
+          } else if (str.at(p.x - 1) == ')' || str.at(p.x + 1) == '(') {
+            str.erase(p.x, 1);
             m_input.set_string(str, m_window);
-          }
-          if (update_tree(m_input.get_string()) > 1) {
-            m_input.set_string("", m_window);
+            update_tree(m_input.get_string());
+          } else {
+            str.erase(p.x, 3);
+            m_input.set_string(str, m_window);
             update_tree(m_input.get_string());
           }
         }
         u++;
+      }
+      {
+        sfml_button& button = m_end_buttons.back();
+        sf::Vector2f pos(button.get_pos() + sf::Vector2f(15, 15));
+        if (hover(pos.x, pos.y, 15) && !m_clicked) {
+          m_clicked = true;
+          std::string str = m_input.get_string();
+          str += "(X)";
+          m_input.set_string(str, m_window);
+          update_tree(m_input.get_string());
+        }
       }
       break;
       
@@ -268,7 +299,9 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
       break;
 
     case sf::Event::TextEntered:
+#ifndef NDEBUG
       m_input.input(event, m_window);
+#endif
       break;
 
     default:
@@ -304,8 +337,10 @@ void sfml_drawing_screen::draw_objects() {
   // Draw tool bar
   m_window.draw(m_tool_bar);
 
+#ifndef NDEBUG
   m_window.draw(m_input.get_shape());
   m_window.draw(m_input.get_text());
+#endif
 
   m_window.draw(m_confirm.get_shape());
   //m_window.draw(m_confirm.get_text());
@@ -340,6 +375,9 @@ void sfml_drawing_screen::draw_objects() {
     m_window.draw(button.get_shape());
     m_window.draw(button.get_text());
   }
+  
+  m_window.draw(m_end_buttons.back().get_shape());
+  m_window.draw(m_end_buttons.back().get_text());
 
   ///////////////
 
@@ -405,9 +443,9 @@ int sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too com
     m_add_nodes.clear();
     m_long_nodes.clear();
     for (char& c : in) {
-      if ((c >= 'A' && c <= 'Z') ||
-          (c >= 'a' && c <= 'z') ||
-          (c == ' ')) {
+      if (((c >= 'A' && c <= 'Z') ||
+           (c >= 'a' && c <= 'z') ||
+           (c == ' ')) && parentheses != 0) {
         chars += c;
         o = i;
         if (chars.at(0) == ' ') {
@@ -473,6 +511,7 @@ int sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too com
       y += 40;
       chars = "";
     }
+    m_end_y = y;
   } catch (int e) {
     std::clog << "Exception Nr. " << e << std::endl;
 #ifndef CI
