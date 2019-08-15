@@ -23,6 +23,12 @@ public:
   
   sf::Texture& get_draw_image() noexcept { return m_draw_image; }
   
+  sf::Texture& get_add_image() noexcept { return m_add_image; }
+  
+  sf::Texture& get_remove_image() noexcept { return m_remove_image; }
+  
+  sf::Texture& get_split_image() noexcept { return m_split_image; }
+  
   //////////////////////
   
 private:
@@ -39,6 +45,12 @@ private:
   
   sf::Texture m_draw_image;
 
+  sf::Texture m_add_image;
+  
+  sf::Texture m_remove_image;
+  
+  sf::Texture m_split_image;
+  
   ///////////////
 
 };

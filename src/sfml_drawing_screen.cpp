@@ -11,14 +11,16 @@
 #include <chrono>
 
 /* TODO
-- Button sprites
-- m_short_buttons for junctions
+- m_short_buttons and m_long_buttons for junctions
 - Giving branches a different LETTER (names will mess up the edit buttons' functionality rn)
 */
 
 sfml_drawing_screen::sfml_drawing_screen(std::string newick)
     : m_window{ sfml_window_manager::get().get_window() },
-      m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}, m_end_y{ 0 }
+      m_input(20, 20, 50, 50), m_tree_lines{}, m_tree_text{}, m_end_y{0},
+      m_add_image{ sfml_resources::get().get_add_image() },
+      m_remove_image{ sfml_resources::get().get_remove_image() },
+      m_split_image{ sfml_resources::get().get_split_image() }
 {
   m_tool_bar.setFillColor(sf::Color(100, 100, 100));
   m_drawing_area.setFillColor(sf::Color(220, 220, 220));
@@ -40,7 +42,12 @@ sfml_drawing_screen::sfml_drawing_screen(std::string newick)
   
   m_input.set_string(newick, m_window);
   update_tree(m_input.get_string());
-  m_end_buttons.push_back(sfml_button(0, m_end_y, 30, 30));
+  
+  sf::Sprite spr3(m_add_image);
+  spr3.setScale(2, 2);
+  spr3.setPosition(0, m_end_y);
+  m_end_buttons.push_back(spr3);
+  
 }
 
 void sfml_drawing_screen::exec() { //!OCLINT can be complex
@@ -70,22 +77,27 @@ void sfml_drawing_screen::exec() { //!OCLINT can be complex
     m_window.setView(m_drawing_view);
     for (auto &v : m_add_nodes) {
       if (hover(v.x, v.y, 7.5)) {
-        m_edit_buttons.push_back(sfml_button(v.x - 7.5, v.y - 7.5, 15, 15));
-        m_edit_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        sf::Sprite spr(m_split_image);
+        spr.setPosition(v.x - 7.5, v.y - 7.5);
+        m_edit_buttons.push_back(spr);
       }
     }
     for (auto &v : m_long_nodes) {
       if ((hover(v.x.x, v.x.y, 7.5) || hover(v.x.x - 20, v.x.y, 7.5) ||
            hover(v.x.x - 10, v.x.y, 7.5))) {
-        m_long_buttons.push_back(sfml_button(v.x.x - 7.5, v.x.y - 7.5, 15, 15));
-        m_long_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        sf::Sprite spr1(m_add_image);
+        spr1.setPosition(v.x.x - 7.5, v.x.y - 7.5);
+        m_long_buttons.push_back(spr1);
         
-        m_short_buttons.push_back(sfml_button(v.x.x - 27.5, v.x.y - 7.5, 15, 15));
-        m_short_buttons.back().set_string("", m_window); // TODO add sprite onto button
+        sf::Sprite spr2(m_remove_image);
+        spr2.setPosition(v.x.x - 27.5, v.x.y - 7.5);
+        m_short_buttons.push_back(spr2);
       }
     }
-    m_end_buttons.push_back(sfml_button(0, m_end_y, 30, 30));
-    m_end_buttons.back().set_string("", m_window); // TODO add sprite onto button
+    sf::Sprite spr3(m_add_image);
+    spr3.setScale(2, 2);
+    spr3.setPosition(0, m_end_y);
+    m_end_buttons.push_back(spr3);
     m_window.setView(tmp_view);
     
     {
@@ -226,7 +238,7 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
         }
       }
       for (auto &button : m_edit_buttons) {
-        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        sf::Vector2f pos(button.getPosition() + sf::Vector2f(7.5, 7.5));
         if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
           m_clicked = true;
           std::string str = m_input.get_string();
@@ -236,7 +248,7 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
         }
       }
       for (auto &button : m_long_buttons) {
-        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        sf::Vector2f pos(button.getPosition() + sf::Vector2f(7.5, 7.5));
         if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
           m_clicked = true;
           std::string str = m_input.get_string();
@@ -248,7 +260,7 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
         }
       }
       for (auto &button : m_short_buttons) {
-        sf::Vector2f pos(button.get_pos() + sf::Vector2f(7.5, 7.5));
+        sf::Vector2f pos(button.getPosition() + sf::Vector2f(7.5, 7.5));
         if (hover(pos.x, pos.y, 7.5) && !m_clicked) {
           m_clicked = true;
           std::string str = m_input.get_string();
@@ -282,8 +294,8 @@ void sfml_drawing_screen::process_event(sf::Event event) { //!OCLINT can be comp
         u++;
       }
       {
-        sfml_button& button = m_end_buttons.back();
-        sf::Vector2f pos(button.get_pos() + sf::Vector2f(15, 15));
+        sf::Sprite& button = m_end_buttons.back();
+        sf::Vector2f pos(button.getPosition() + sf::Vector2f(15, 15));
         if (hover(pos.x, pos.y, 15) && !m_clicked) {
           m_clicked = true;
           std::string str = m_input.get_string();
@@ -364,20 +376,16 @@ void sfml_drawing_screen::draw_objects() {
   }
   
   for (auto &button : m_edit_buttons) {
-    m_window.draw(button.get_shape());
-    m_window.draw(button.get_text());
+    m_window.draw(button);
   }
   for (auto &button : m_long_buttons) {
-    m_window.draw(button.get_shape());
-    m_window.draw(button.get_text());
+    m_window.draw(button);
   }
   for (auto &button : m_short_buttons) {
-    m_window.draw(button.get_shape());
-    m_window.draw(button.get_text());
+    m_window.draw(button);
   }
   
-  m_window.draw(m_end_buttons.back().get_shape());
-  m_window.draw(m_end_buttons.back().get_text());
+  m_window.draw(m_end_buttons.back());
 
   ///////////////
 
@@ -522,18 +530,18 @@ int sfml_drawing_screen::update_tree(std::string in) { //!OCLINT ofc way too com
   return 0;
 }
 
-int sfml_drawing_screen::get_string_pos(sfml_button &button) {
+int sfml_drawing_screen::get_string_pos(sf::Sprite &button) {
   for (auto &v : m_add_nodes) {
-    if (sf::Vector2f(v.x - 7.5, v.y - 7.5) == button.get_pos()) {
+    if (sf::Vector2f(v.x - 7.5, v.y - 7.5) == button.getPosition()) {
       return v.z;
     }
   }
   return -1;
 }
 
-sf::Vector2i sfml_drawing_screen::get_par_pos(sfml_button &button) {
+sf::Vector2i sfml_drawing_screen::get_par_pos(sf::Sprite &button) {
   for (auto &v : m_long_nodes) {
-    if (sf::Vector2f(v.x.x - 7.5, v.x.y - 7.5) == button.get_pos()) {
+    if (sf::Vector2f(v.x.x - 7.5, v.x.y - 7.5) == button.getPosition()) {
       return sf::Vector2i(v.y);
     }
   }

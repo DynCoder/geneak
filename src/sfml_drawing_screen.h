@@ -52,23 +52,29 @@ private:
     std::vector<sfml_line> m_tree_lines;
     std::vector<sf::Text> m_tree_text;
     std::vector<sf::Vector3f> m_add_nodes;
-    std::vector<sfml_button> m_edit_buttons;
+    std::vector<sf::Sprite> m_edit_buttons;
     std::vector<sf::Vector2<sf::Vector2f>> m_long_nodes;
-    std::vector<sfml_button> m_long_buttons;
-    std::vector<sfml_button> m_short_buttons;
-    std::vector<sfml_button> m_end_buttons;
+    std::vector<sf::Sprite> m_long_buttons;
+    std::vector<sf::Sprite> m_short_buttons;
+    std::vector<sf::Sprite> m_end_buttons;
     int m_end_y;
     
     bool m_clicked;
     
     int update_tree(std::string in);
     
-    int get_string_pos(sfml_button &button);
-    sf::Vector2i get_par_pos(sfml_button &button);
+    int get_string_pos(sf::Sprite &button);
+    sf::Vector2i get_par_pos(sf::Sprite &button);
     
     bool hover(float x, float y, float range);
 
     std::string m_path;
+    
+    sf::Texture& m_add_image;
+  
+    sf::Texture& m_remove_image;
+  
+    sf::Texture& m_split_image;
     
 };
 
