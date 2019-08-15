@@ -11,7 +11,7 @@ All code in this project is licensed under the GPLv3 license.
 Refer to [LICENSE](LICENSE) for the full license.
 
 # GENEAK
-[![Logo](doc/logo.png)\
+[!<img src="doc/logo.png" alt="Logo" width="150" height="150">\
 Download](https://github.com/Joshua260403/geneak/releases)
 
 ## the name
