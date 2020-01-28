@@ -32,4 +32,4 @@ Geneak supports a newick-like format that looks like this:
 For help with Geneak or feedback/suggestions refer to:
     https://github.com/Joshua260403/geneak/issues
 or contact me via mail:
-    joshua.dyncode@gmail.com
+    joshuavwaardenberg@gmail.com
